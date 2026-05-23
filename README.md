@@ -59,21 +59,8 @@
 1. 克隆仓库到本地
    ```bash
    git clone https://github.com/aili-hue/TaoChuShengTian.git
-2. 项目结构
-text
-TaoChuShengTian/
-├─ Source/
-│  └─ TaoChuShengTian/
-│     ├─ JueSe/                    # 角色相关代码
-│     │  └─ My_Character.h/cpp     # 玩家角色主类
-│     ├─ WuPin/                    # 物品相关代码
-│     │  └─ Actor_WuPin.h/cpp      # 可拾取物品 Actor
-│     ├─ WuQiActor/                # 武器相关代码
-│     │  └─ My_WuQi_Actor.h/cpp    # 武器 Actor 基类
-│     └─ MyPrimaryDataAsset.h/cpp  # 物品数据资产基类
-├─ Content/                        # 游戏资源
-└─ TaoChuShengTian.uproject        # 项目主文件
-3.  代码亮点
+
+2.  代码亮点
 亮点	说明
 极致的内存安全	所有指针访问前都进行空指针检查，使用 TWeakObjectPtr 避免野指针
 完善的委托管理	使用 FDelegateHandle 精准绑定和解绑委托，双向解绑防止崩溃
