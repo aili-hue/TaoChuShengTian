@@ -1,4 +1,4 @@
-逃出升天 (TaoChuShengTian)
+#逃出升天 (TaoChuShengTian)
 一个基于 Unreal Engine 5 开发的第一人称生存恐怖游戏 Demo，纯 C++ 实现核心玩法系统。
 🎮 项目介绍
 本项目是我个人独立开发的 UE5 C++ 学习项目，旨在打造一个完整的第一人称游戏核心框架。所有系统均采用工业级标准设计，遵循数据与逻辑分离、组件化、低耦合的软件工程原则。
@@ -15,7 +15,7 @@
 
 
 
-✅ 已实现功能
+#✅ 已实现功能
 1. 角色控制系统
 
 第一人称视角移动（前后左右、跳跃、蹲伏）
@@ -45,14 +45,14 @@
 所有游戏数据与逻辑完全分离
 策划可在编辑器中直接配置物品属性
 
-🖥️ 运行环境
+#🖥️ 运行环境
 
 操作系统：Windows 10/11 64 位
 引擎版本：Unreal Engine 5.5
 编译器：Visual Studio 2022（需安装 "游戏开发用 C++" 工作负载）
 硬件要求：支持 DX12 的显卡，至少 8GB 内存
 
-🚀 快速开始
+#🚀 快速开始
 
 克隆仓库到本地
 bash运行git clone https://github.com/aili-hue/TaoChuShengTian.git
@@ -62,7 +62,7 @@ bash运行git clone https://github.com/aili-hue/TaoChuShengTian.git
 当 UE 提示 "缺少项目文件" 时，点击 "是" 自动生成
 等待引擎加载完成后，点击 "播放" 按钮即可运行
 
-📅 开发计划
+#📅 开发计划
 
  背包系统（物品堆叠、添加、删除、UI 显示）
  完整的武器攻击逻辑（碰撞检测、伤害计算、冷却）
@@ -71,7 +71,7 @@ bash运行git clone https://github.com/aili-hue/TaoChuShengTian.git
  玩家生命值与伤害系统
  多人联机支持
 
-📁 项目结构plaintextTaoChuShengTian/
+#📁 项目结构plaintextTaoChuShengTian/
 ├─ Source/
 │  ├─ TaoChuShengTian/
 │  │  ├─ JueSe/              # 角色相关代码
@@ -84,14 +84,14 @@ bash运行git clone https://github.com/aili-hue/TaoChuShengTian.git
 ├─ Content/                   # 游戏资源
 └─ TaoChuShengTian.uproject   # 项目主文件
 
-📝 代码亮点
+#📝 代码亮点
 
 极致的内存安全：所有指针访问前都进行空指针检查，使用 TWeakObjectPtr 避免野指针
 完善的委托管理：使用 FDelegateHandle 精准绑定和解绑委托，双向解绑防止崩溃
 数据与逻辑分离：所有游戏数据都存储在数据资产中，逻辑代码通用
 清晰的代码结构：遵循 UE 编码规范，命名清晰，逻辑分层明确
 
-📄 许可证
+#📄 许可证
 本项目采用 MIT 许可证，详情请参见 LICENSE 文件。
 
 这是我作为 UE C++ 开发者的学习项目，持续更新中。如果对你有帮助，欢迎给个 Star⭐！
