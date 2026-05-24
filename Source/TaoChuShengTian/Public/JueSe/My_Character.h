@@ -72,6 +72,11 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "角色武器插槽")
 	FName WuQiChaCao = TEXT("hand_wuqichacao");
+//角色是否拥有武器|近战
+
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = "是否持有近战武器")
+	bool bChiYouJinZhanWuQi = false;
+
 
 private:
 

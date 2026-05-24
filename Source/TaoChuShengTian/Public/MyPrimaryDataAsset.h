@@ -9,13 +9,15 @@
 UENUM(BlueprintType)
 enum class EMYUELeiXing : uint8
 {
-	BangQiuGun UMETA(DisplayName = "棒球棍")
+	BangQiuGun UMETA(DisplayName = "棒球棍"),
+	YaoPin UMETA(DisplayName = "药品")
 };
 
 UCLASS(BlueprintType)
 class TAOCHUSHENGTIAN_API UMyPrimaryDataAsset : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
+
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "身份证")

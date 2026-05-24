@@ -5,22 +5,34 @@
 #include"Components/StaticMeshComponent.h"
 #include"Components/SphereComponent.h"
 #include "JueSe/My_Character.h"
+#include "My_GameModeBase.h"
 #include"Kismet/GameplayStatics.h"
 // Sets default values
 AActor_WuPin::AActor_WuPin()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	StaticMeshComponent->SetupAttachment(RootComponent);
 
 	StaticMeshGaoGuang=CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshGaoGuang"));
 	StaticMeshGaoGuang->SetupAttachment(StaticMeshComponent);
 
+
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 	SphereComponent->SetupAttachment(StaticMeshComponent);
+
 }
 
+
+void AActor_WuPin::FuYuMyShuJv(UMyPrimaryDataAsset* ChuDiShuJv)
+{
+	if(ChuDiShuJv)
+	{
+		WuPinShuJu = ChuDiShuJv;
+	}
+}
 
 void AActor_WuPin::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -33,7 +45,7 @@ void AActor_WuPin::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 
 		//显示高光并设置触发标志
 		bIsChongDie = true;
-		StaticMeshGaoGuang->SetVisibility(true);
+		StaticMeshGaoGuang->SetVisibility(bIsChongDie);
 
 		//如果委托未绑定，则绑定委托
 		if (!WeiTuoJvBing.IsValid())
@@ -49,9 +61,9 @@ void AActor_WuPin::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* Oth
 	if (OtherActor && OtherActor != this)
 	{
 		bIsChongDie = false;
-		StaticMeshGaoGuang->SetVisibility(false);
+		StaticMeshGaoGuang->SetVisibility(bIsChongDie);
 		//如果委托已绑定，则解绑委托
-		if (WeiTuoJvBing.IsValid())
+		if (WeiTuoJvBing.IsValid()&& MyCharacter.IsValid())
 		{
 			//解绑委托
 			MyCharacter->ShiQuWeiTuo.Remove(WeiTuoJvBing);
@@ -85,6 +97,25 @@ void AActor_WuPin::BeginPlay()
 
 	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnOverlapBegin);
 	SphereComponent->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnOverlapEnd);
+
+	AMy_GameModeBase* MyGameMode_WuPin = Cast<AMy_GameModeBase>(UGameplayStatics::GetGameMode(this));
+	if(MyGameMode_WuPin)
+	{
+		MyGameMode_WuPin->MyXingWuPin(this);
+	}
+	//根据物品数据资产设置静态网格体和高光材质
+
+	if(WuPin_ShuJv.Contains(WuPinShuJu)&& WuPinShuJu)
+	{
+		//字典中包含物品数据资产
+
+		StaticMeshComponent->SetStaticMesh(WuPin_ShuJv[WuPinShuJu]);
+		StaticMeshGaoGuang->SetStaticMesh(WuPin_ShuJv[WuPinShuJu]);
+		StaticMeshGaoGuang->SetMaterial(0,GaoGuangCaiZhi);
+
+		StaticMeshGaoGuang->SetVisibility(bIsChongDie);
+
+	}
 
 }
 
