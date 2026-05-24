@@ -115,6 +115,11 @@ void AMy_Character::ChuLiShiQu(AActor* WuPin, UMyPrimaryDataAsset* WuPinShuJu)
 	{
 		//将生成的武器Actor绑定到角色的武器插槽上
 		WeaponActor->AttachToComponent(GetMesh(),FAttachmentTransformRules::SnapToTargetIncludingScale, WuQiChaCao);
+
+		//玩家持有近战武器
+		if (WuPinShuJu->MYUELeiXing == EMYUELeiXing::BangQiuGun)
+		bChiYouJinZhanWuQi = true;
+
 	}
 	else
 	{
