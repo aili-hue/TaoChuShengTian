@@ -11,7 +11,11 @@
 
 #include "My_Character.generated.h"
 
+//角色拾取委托声明
 DECLARE_MULTICAST_DELEGATE(FShiQuWeiTuo);
+
+//设置物品碰撞委托声明
+DECLARE_DELEGATE_OneParam(FChuFaPengZhuang, bool);
 
 UCLASS()
 class TAOCHUSHENGTIAN_API AMy_Character : public ACharacter
@@ -63,11 +67,12 @@ public:
 //角色拾取委托
 
 	FShiQuWeiTuo ShiQuWeiTuo;
-
-	//角色触发拾取委托
-
+//角色触发碰撞委托
+	FChuFaPengZhuang ChuFaPengZhuang;
+//角色触发碰撞委托函数
+	void ChuFaPengZhuangFunc(bool bPengZhuang);
+//角色触发拾取委托函数
 	void ChuLiShiQu(AActor* WuPin, UMyPrimaryDataAsset* WuPinShuJu);
-
 //角色持有武器的插槽
 
 	UPROPERTY(EditAnywhere, Category = "角色武器插槽")
@@ -77,6 +82,14 @@ public:
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = "是否持有近战武器")
 	bool bChiYouJinZhanWuQi = false;
 
+	//武器碰撞标志
+	bool bKaiQIPengZhuang = false;
+	//关闭近战武器碰撞函数
+	UFUNCTION(BlueprintCallable, Category = "关闭武器碰撞")
+	void GuangBiPengZhuang();
+	//背包组件
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "背包组件")
+	TObjectPtr<class UMy_BeiBaoComponent>BeiBaoComponent;
 
 private:
 
@@ -94,6 +107,8 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<AActor> WeaponActor;
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

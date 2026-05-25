@@ -35,7 +35,7 @@ public:
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	//弱指针绑定
-	TWeakObjectPtr<class AMy_Character> MyCharacter;
+	TWeakObjectPtr<class AMy_Character> ZhiZhenMyCharacter;
 	void ChuFaShiQuWeiTuo();
 	//随机物品
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "随机物品和物品数据")

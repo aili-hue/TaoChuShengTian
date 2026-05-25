@@ -16,6 +16,8 @@
 
 #include "Actor_WuPin.h"
 
+#include "BeiBao/My_BeiBaoComponent.h"
+
 // Sets default values
 AMy_Character::AMy_Character()
 {
@@ -33,7 +35,10 @@ AMy_Character::AMy_Character()
 
 	CharacterMovementComponent = GetCharacterMovement();
 	CharacterMovementComponent->MaxWalkSpeed = ChuShiYiDongSuDong;
-	
+
+//背包组件
+	BeiBaoComponent = CreateDefaultSubobject<UMy_BeiBaoComponent>(TEXT("BeiBaoComponent"));
+
 }
 //角色移动
 void AMy_Character::MoveInput(const FInputActionValue& PlayInput)
@@ -80,18 +85,18 @@ void AMy_Character::ShiQuInput(const FInputActionValue& PlayInput)
 	ShiQuWeiTuo.Broadcast();
 }
 
-void AMy_Character::GongtjiInput(const FInputActionValue& PlayInput)
+
+void AMy_Character::ChuFaPengZhuangFunc(bool bPengZhuang)
 {
-	//如果角色没有武器，就无法攻击
-	if (!WeaponActor)return;
-	UE_LOG(LogTemp, Log, TEXT("攻击"));
+	ChuFaPengZhuang.ExecuteIfBound(bPengZhuang);
 }
 
 void AMy_Character::ChuLiShiQu(AActor* WuPin, UMyPrimaryDataAsset* WuPinShuJu)
 {
 	//先判断物品和物品数据资产是否有效
 	if(!WuPin||!WuPinShuJu)return;
-
+	//将拾取的物品传递给背包组件
+	BeiBaoComponent->addWuPin(WuPinShuJu);
 	//根据物品数据资产的类型和数量进行相应的处理，比如增加玩家的属性，或者在角色上生成一个新的Actor（比如武器）
 	if(WuPinShuJu->CunFangActor)
 	{
@@ -117,8 +122,10 @@ void AMy_Character::ChuLiShiQu(AActor* WuPin, UMyPrimaryDataAsset* WuPinShuJu)
 		WeaponActor->AttachToComponent(GetMesh(),FAttachmentTransformRules::SnapToTargetIncludingScale, WuQiChaCao);
 
 		//玩家持有近战武器
-		if (WuPinShuJu->MYUELeiXing == EMYUELeiXing::BangQiuGun)
-		bChiYouJinZhanWuQi = true;
+		if (WuPinShuJu->MYUELeiXing == EMYUELeiXing::WuQi_JinZhan)
+		{
+			bChiYouJinZhanWuQi = true;
+		}
 
 	}
 	else
@@ -126,6 +133,30 @@ void AMy_Character::ChuLiShiQu(AActor* WuPin, UMyPrimaryDataAsset* WuPinShuJu)
 		WeaponActor = nullptr;
 		return;
 	}
+}
+void AMy_Character::GuangBiPengZhuang()
+{
+	//关闭武器碰撞
+	bKaiQIPengZhuang = false;
+	ChuFaPengZhuangFunc(bKaiQIPengZhuang);
+}
+void AMy_Character::GongtjiInput(const FInputActionValue& PlayInput)
+{
+	//如果角色没有武器，就无法攻击
+	if (!WeaponActor)return;
+	//如果角色持有近战武器，就触发攻击事件
+	if (bChiYouJinZhanWuQi&& !bKaiQIPengZhuang)
+	{
+		//开启武器碰撞
+		bKaiQIPengZhuang = true;
+		ChuFaPengZhuangFunc(bKaiQIPengZhuang);
+		UE_LOG(LogTemp, Warning, TEXT("开启武器碰撞"));
+	}
+	if(bKaiQIPengZhuang)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("攻击了！"));
+	}
+
 }
 
 

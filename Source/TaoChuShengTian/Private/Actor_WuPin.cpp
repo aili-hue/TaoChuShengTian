@@ -16,6 +16,9 @@ AActor_WuPin::AActor_WuPin()
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	StaticMeshComponent->SetupAttachment(RootComponent);
 
+	//设置物理模拟
+	StaticMeshComponent->SetSimulatePhysics(true);
+
 	StaticMeshGaoGuang=CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshGaoGuang"));
 	StaticMeshGaoGuang->SetupAttachment(StaticMeshComponent);
 
@@ -40,8 +43,8 @@ void AActor_WuPin::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 	if(OtherActor && OtherActor != this)
 	{
 		//获取角色指针并绑定委托
-		MyCharacter = Cast<AMy_Character>(OtherActor);
-		if (!MyCharacter.IsValid())return;
+		ZhiZhenMyCharacter = Cast<AMy_Character>(OtherActor);
+		if (!ZhiZhenMyCharacter.IsValid())return;
 
 		//显示高光并设置触发标志
 		bIsChongDie = true;
@@ -50,7 +53,7 @@ void AActor_WuPin::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* O
 		//如果委托未绑定，则绑定委托
 		if (!WeiTuoJvBing.IsValid())
 		{
-			WeiTuoJvBing = MyCharacter->ShiQuWeiTuo.AddUObject(this, &ThisClass::ChuFaShiQuWeiTuo);
+			WeiTuoJvBing = ZhiZhenMyCharacter->ShiQuWeiTuo.AddUObject(this, &ThisClass::ChuFaShiQuWeiTuo);
 		}
 	}
 
@@ -63,16 +66,16 @@ void AActor_WuPin::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* Oth
 		bIsChongDie = false;
 		StaticMeshGaoGuang->SetVisibility(bIsChongDie);
 		//如果委托已绑定，则解绑委托
-		if (WeiTuoJvBing.IsValid()&& MyCharacter.IsValid())
+		if (WeiTuoJvBing.IsValid()&& ZhiZhenMyCharacter.IsValid())
 		{
 			//解绑委托
-			MyCharacter->ShiQuWeiTuo.Remove(WeiTuoJvBing);
+			ZhiZhenMyCharacter->ShiQuWeiTuo.Remove(WeiTuoJvBing);
 			//重置委托句柄
 			WeiTuoJvBing.Reset();
 		}
 
 		//重置角色弱指针
-		MyCharacter = nullptr;
+		ZhiZhenMyCharacter = nullptr;
 
 	}
 }
@@ -80,9 +83,9 @@ void AActor_WuPin::ChuFaShiQuWeiTuo()
 {
 	if(bIsChongDie)
 	{
-		if (MyCharacter.IsValid())
+		if (ZhiZhenMyCharacter.IsValid())
 		{
-			MyCharacter->ChuLiShiQu(this, WuPinShuJu);
+			ZhiZhenMyCharacter->ChuLiShiQu(this, WuPinShuJu);
 			WeiTuoJvBing.Reset();
 		}
 		bIsChongDie = false;
@@ -121,9 +124,9 @@ void AActor_WuPin::BeginPlay()
 
 void AActor_WuPin::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	if(MyCharacter.IsValid())
+	if(ZhiZhenMyCharacter.IsValid())
 	{
-		MyCharacter->ShiQuWeiTuo.RemoveAll(this);
+		ZhiZhenMyCharacter->ShiQuWeiTuo.RemoveAll(this);
 	}
 	Super::EndPlay(EndPlayReason);
 }
