@@ -97,6 +97,7 @@ void AMy_Character::ChuLiShiQu(AActor* WuPin, UMyPrimaryDataAsset* WuPinShuJu)
 	if(!WuPin||!WuPinShuJu)return;
 	//将拾取的物品传递给背包组件
 	BeiBaoComponent->addWuPin(WuPinShuJu);
+	
 	//根据物品数据资产的类型和数量进行相应的处理，比如增加玩家的属性，或者在角色上生成一个新的Actor（比如武器）
 	if(WuPinShuJu->CunFangActor)
 	{
@@ -133,6 +134,7 @@ void AMy_Character::ChuLiShiQu(AActor* WuPin, UMyPrimaryDataAsset* WuPinShuJu)
 		WeaponActor = nullptr;
 		return;
 	}
+
 }
 void AMy_Character::GuangBiPengZhuang()
 {
@@ -157,6 +159,19 @@ void AMy_Character::GongtjiInput(const FInputActionValue& PlayInput)
 		UE_LOG(LogTemp, Warning, TEXT("攻击了！"));
 	}
 
+}
+//背包input执行函数
+void AMy_Character::BeiBaoInPut(const FInputActionValue& PlayInput)
+{
+	if(!bKaiQi_BeiBao)
+	{
+		DaKaiBeiBao();
+		bKaiQi_BeiBao = !bKaiQi_BeiBao;
+		return;
+	}
+
+	GuanBiBeiBao();
+	bKaiQi_BeiBao = !bKaiQi_BeiBao;
 }
 
 
@@ -220,6 +235,10 @@ void AMy_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		if(IA_GongJi)
 		{
 			ZengQiangComponent->BindAction(IA_GongJi, ETriggerEvent::Started, this, &ThisClass::GongtjiInput);
+		}
+		if(IA_Tab)
+		{
+			ZengQiangComponent->BindAction(IA_Tab, ETriggerEvent::Started, this, &ThisClass::BeiBaoInPut);
 		}
 	}
 

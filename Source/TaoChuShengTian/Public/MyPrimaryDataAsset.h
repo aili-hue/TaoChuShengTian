@@ -24,6 +24,8 @@ public:
 	FName ID;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "物品类型")
 	EMYUELeiXing MYUELeiXing = EMYUELeiXing::WuQi_JinZhan;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "显示图像")
+	TObjectPtr<UTexture2D>Texture2D;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "物品数量")
 	int32 ShuLiang = 1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "物品功能")

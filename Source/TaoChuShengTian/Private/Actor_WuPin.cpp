@@ -22,6 +22,8 @@ AActor_WuPin::AActor_WuPin()
 	StaticMeshGaoGuang=CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshGaoGuang"));
 	StaticMeshGaoGuang->SetupAttachment(StaticMeshComponent);
 
+	StaticMeshGaoGuang->SetCollisionEnabled(ECollisionEnabled::NoCollision); // 高光不需要碰撞
+	StaticMeshGaoGuang->SetVisibility(false);
 
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 	SphereComponent->SetupAttachment(StaticMeshComponent);
@@ -101,11 +103,6 @@ void AActor_WuPin::BeginPlay()
 	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnOverlapBegin);
 	SphereComponent->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnOverlapEnd);
 
-	AMy_GameModeBase* MyGameMode_WuPin = Cast<AMy_GameModeBase>(UGameplayStatics::GetGameMode(this));
-	if(MyGameMode_WuPin)
-	{
-		MyGameMode_WuPin->MyXingWuPin(this);
-	}
 	//根据物品数据资产设置静态网格体和高光材质
 
 	if(WuPin_ShuJv.Contains(WuPinShuJu)&& WuPinShuJu)
@@ -120,6 +117,16 @@ void AActor_WuPin::BeginPlay()
 
 	}
 
+}
+
+void AActor_WuPin::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	AMy_GameModeBase* MyGameMode_WuPin = Cast<AMy_GameModeBase>(UGameplayStatics::GetGameMode(this));
+	if (MyGameMode_WuPin)
+	{
+		MyGameMode_WuPin->MyXingWuPin(this);
+	}
 }
 
 void AActor_WuPin::EndPlay(const EEndPlayReason::Type EndPlayReason)
