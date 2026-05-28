@@ -13,9 +13,9 @@
 
 //角色拾取委托声明
 DECLARE_MULTICAST_DELEGATE(FShiQuWeiTuo);
-
 //设置物品碰撞委托声明
 DECLARE_DELEGATE_OneParam(FChuFaPengZhuang, bool);
+
 
 UCLASS()
 class TAOCHUSHENGTIAN_API AMy_Character : public ACharacter
@@ -54,6 +54,8 @@ public:
 	TObjectPtr<UInputAction>IA_ShuBiao_YiDong;
 	UPROPERTY(EditAnywhere, Category = "输入映射|鼠标左键|攻击")
 	TObjectPtr<UInputAction>IA_GongJi;
+	UPROPERTY(EditAnywhere, Category = "输入映射|打开关闭背包")
+	TObjectPtr<UInputAction>IA_Tab;
 
 //角色映射调用函数
 
@@ -63,14 +65,16 @@ public:
 	void ShiftInput(const FInputActionValue& PlayInput);
 	void ShiQuInput(const FInputActionValue& PlayInput);
 	void GongtjiInput(const FInputActionValue& PlayInput);
-
+	void BeiBaoInPut(const FInputActionValue& PlayInput);
 //角色拾取委托
 
 	FShiQuWeiTuo ShiQuWeiTuo;
 //角色触发碰撞委托
 	FChuFaPengZhuang ChuFaPengZhuang;
 //角色触发碰撞委托函数
+
 	void ChuFaPengZhuangFunc(bool bPengZhuang);
+
 //角色触发拾取委托函数
 	void ChuLiShiQu(AActor* WuPin, UMyPrimaryDataAsset* WuPinShuJu);
 //角色持有武器的插槽
@@ -90,6 +94,13 @@ public:
 	//背包组件
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "背包组件")
 	TObjectPtr<class UMy_BeiBaoComponent>BeiBaoComponent;
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "打开背包")
+	void DaKaiBeiBao();
+	UFUNCTION(BlueprintImplementableEvent, Category = "关闭背包")
+	void GuanBiBeiBao();
+
+	bool bKaiQi_BeiBao = false;
 
 private:
 
