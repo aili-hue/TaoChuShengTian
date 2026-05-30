@@ -71,12 +71,16 @@ void AMy_Character::JumpInput(const FInputActionValue& PlayInput)
 //角色加速度
 void AMy_Character::ShiftInput(const FInputActionValue& PlayInput)
 {
-	if(CharacterMovementComponent->MaxWalkSpeed == ChuShiYiDongSuDong)
+	//如果移动速度属于正常移动速度且不属于蹲下，就可以加速
+	if (CharacterMovementComponent->MaxWalkSpeed == ChuShiYiDongSuDong && !bShiFouDun)
 	{
 		CharacterMovementComponent->MaxWalkSpeed = MaxYiDongSuDong;
 		return;
 	}
-	CharacterMovementComponent->MaxWalkSpeed = ChuShiYiDongSuDong;
+	if(!bShiFouDun)
+	{
+		CharacterMovementComponent->MaxWalkSpeed = ChuShiYiDongSuDong;
+	}
 }
 
 
@@ -173,6 +177,17 @@ void AMy_Character::BeiBaoInPut(const FInputActionValue& PlayInput)
 	GuanBiBeiBao();
 	bKaiQi_BeiBao = !bKaiQi_BeiBao;
 }
+//蹲下
+void AMy_Character::DunXiaInPut(const FInputActionValue& PlayInput)
+{
+	bShiFouDun = !bShiFouDun;
+	if(bShiFouDun)
+	{
+		CharacterMovementComponent->MaxWalkSpeed = DunMax;
+		return;
+	}
+	CharacterMovementComponent->MaxWalkSpeed = ChuShiYiDongSuDong;
+}
 
 
 // Called when the game starts or when spawned
@@ -239,6 +254,10 @@ void AMy_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		if(IA_Tab)
 		{
 			ZengQiangComponent->BindAction(IA_Tab, ETriggerEvent::Started, this, &ThisClass::BeiBaoInPut);
+		}
+		if(IA_Dun)
+		{
+			ZengQiangComponent->BindAction(IA_Dun, ETriggerEvent::Started, this, &ThisClass::DunXiaInPut);
 		}
 	}
 
