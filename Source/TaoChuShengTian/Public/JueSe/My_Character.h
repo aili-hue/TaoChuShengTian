@@ -56,7 +56,8 @@ public:
 	TObjectPtr<UInputAction>IA_GongJi;
 	UPROPERTY(EditAnywhere, Category = "输入映射|打开关闭背包")
 	TObjectPtr<UInputAction>IA_Tab;
-
+	UPROPERTY(EditAnywhere, Category = "输入映射|蹲下")
+	TObjectPtr<UInputAction>IA_Dun;
 //角色映射调用函数
 
 	void MoveInput(const FInputActionValue&PlayInput);
@@ -66,6 +67,7 @@ public:
 	void ShiQuInput(const FInputActionValue& PlayInput);
 	void GongtjiInput(const FInputActionValue& PlayInput);
 	void BeiBaoInPut(const FInputActionValue& PlayInput);
+	void DunXiaInPut(const FInputActionValue& PlayInput);
 //角色拾取委托
 
 	FShiQuWeiTuo ShiQuWeiTuo;
@@ -101,7 +103,10 @@ public:
 	void GuanBiBeiBao();
 
 	bool bKaiQi_BeiBao = false;
-
+	//蹲下最大移动速度
+	float DunMax = 200.f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "是否蹲下")
+	bool bShiFouDun = false;
 private:
 
 //角色移动组件

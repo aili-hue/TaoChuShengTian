@@ -63,9 +63,6 @@ void UMy_BeiBaoComponent::WuPinXinXi(FName WuPinID, int32 WuPinShuLiang, UTextur
 	GengXin.Broadcast(WuPinID, WuPinShuLiang, TuXiang);
 }
 
-
-
-
 // Called when the game starts
 void UMy_BeiBaoComponent::BeginPlay()
 {
