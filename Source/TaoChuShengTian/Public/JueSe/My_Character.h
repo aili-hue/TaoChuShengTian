@@ -88,6 +88,17 @@ public:
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = "是否持有近战武器")
 	bool bChiYouJinZhanWuQi = false;
 
+//动画蒙太奇数组
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "近战蒙太奇")
+	TArray<TObjectPtr<UAnimMontage>>GongJiMontage;
+	int32 DongHuaShu = -1;
+	UFUNCTION(BlueprintCallable, Category = "获取近战蒙太奇")
+	UAnimMontage* QieHuan();
+
+//攻击函数
+	UFUNCTION(BlueprintImplementableEvent, Category = "攻击")
+	void GongJiIpute();
 	//武器碰撞标志
 	bool bKaiQIPengZhuang = false;
 	//关闭近战武器碰撞函数
