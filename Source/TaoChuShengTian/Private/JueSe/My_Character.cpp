@@ -140,6 +140,16 @@ void AMy_Character::ChuLiShiQu(AActor* WuPin, UMyPrimaryDataAsset* WuPinShuJu)
 	}
 
 }
+//切换近战动画
+UAnimMontage* AMy_Character::QieHuan()
+{
+	if (GongJiMontage.Num() == 0)return nullptr;
+	//用动画总数来%判断是否为最大值如果为就归零如果不为则正常增加
+	DongHuaShu = (DongHuaShu + 1) % GongJiMontage.Num();
+
+	return GongJiMontage[DongHuaShu];
+}
+
 void AMy_Character::GuangBiPengZhuang()
 {
 	//关闭武器碰撞
@@ -151,18 +161,13 @@ void AMy_Character::GongtjiInput(const FInputActionValue& PlayInput)
 	//如果角色没有武器，就无法攻击
 	if (!WeaponActor)return;
 	//如果角色持有近战武器，就触发攻击事件
-	if (bChiYouJinZhanWuQi&& !bKaiQIPengZhuang)
+	if (bChiYouJinZhanWuQi && !bKaiQIPengZhuang && !bShiFouDun)
 	{
 		//开启武器碰撞
 		bKaiQIPengZhuang = true;
 		ChuFaPengZhuangFunc(bKaiQIPengZhuang);
-		UE_LOG(LogTemp, Warning, TEXT("开启武器碰撞"));
+		GongJiIpute();
 	}
-	if(bKaiQIPengZhuang)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("攻击了！"));
-	}
-
 }
 //背包input执行函数
 void AMy_Character::BeiBaoInPut(const FInputActionValue& PlayInput)
@@ -194,7 +199,6 @@ void AMy_Character::DunXiaInPut(const FInputActionValue& PlayInput)
 void AMy_Character::BeginPlay()
 {
 	Super::BeginPlay();
-
 //增强输入注册	
 	if (APlayerController* WanJiaController = Cast<APlayerController>(Controller))
 	{
