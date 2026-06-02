@@ -12,10 +12,10 @@ UMy_BeiBaoComponent::UMy_BeiBaoComponent()
 
 }
 
-void UMy_BeiBaoComponent::addWuPin(UMyPrimaryDataAsset* ItemToAdd)
+bool UMy_BeiBaoComponent::addWuPin(UMyPrimaryDataAsset* ItemToAdd)
 {
 
-	if (!ItemToAdd || ItemToAdd->ID.IsNone() || ItemToAdd->ShuLiang <= 0)return;
+	if (!ItemToAdd || ItemToAdd->ID.IsNone() || ItemToAdd->ShuLiang <= 0)return false;
 	//拾取物品ID名称
 	FName WuPinID = ItemToAdd->ID;
 	//拾取物品的数量
@@ -34,6 +34,8 @@ void UMy_BeiBaoComponent::addWuPin(UMyPrimaryDataAsset* ItemToAdd)
 		WuPinShuJv[WuPinID] = WuPinShuLiang;
 	}
 	WuPinXinXi(WuPinID, WuPinShuLiang, Texture2D);
+
+	return true;
 }
 
 int32 UMy_BeiBaoComponent::GetBeiBaoWuPinShuLiang(FName WuPinID)

@@ -13,12 +13,16 @@ void AMy_GameModeBase::MyXingWuPin(AActor_WuPin* WuPin)
 	//将物品添加到物品数组中
 	WuPinActor.Add(WuPin);
 	SuiJi_ShuJv_SuoYin = FMath::RandRange(0, SuiJi_ShuJv.Num() - 1);
-	UMyPrimaryDataAsset* WuPPinShuJv = SuiJi_ShuJv[SuiJi_ShuJv_SuoYin];
 
-	WuPin->WuPinShuJu = WuPPinShuJv;
-}
+	if (UMyPrimaryDataAsset* WuPPinShuJv = SuiJi_ShuJv[SuiJi_ShuJv_SuoYin])
+	{
+		WuPin->WuPinShuJu = WuPPinShuJv;
 
-void AMy_GameModeBase::BeginPlay()
-{
-	Super::BeginPlay();
+	}
+	else
+	{
+		SuiJi_ShuJv_SuoYin = FMath::RandRange(0, SuiJi_ShuJv.Num() - 1);
+		WuPPinShuJv = SuiJi_ShuJv[SuiJi_ShuJv_SuoYin];
+	}
+	return;
 }

@@ -20,19 +20,20 @@ public:
 	TObjectPtr<class UStaticMeshComponent>StaticMeshComponent;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TObjectPtr<class UCapsuleComponent>CapsuleComponent;
+
 	//…Ë÷√≈ˆ◊≤
+
 	bool bIsPengZhuang = false;
+
 	void SetStaticMeshPengZhung(bool KaiGUan);
 
 	//»ı÷∏’Î∞Û∂®
 	UPROPERTY()
 	TWeakObjectPtr<class AMy_Character>MyCharacterRuoZhiZhen;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason)override;
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 };
