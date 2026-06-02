@@ -55,10 +55,3 @@ void AMy_WuQi_Actor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
-// Called every frame
-void AMy_WuQi_Actor::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-

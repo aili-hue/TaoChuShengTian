@@ -18,6 +18,11 @@
 
 #include "BeiBao/My_BeiBaoComponent.h"
 
+#include"TimerManager.h"
+
+#include "HP/HP_Component.h"
+
+
 // Sets default values
 AMy_Character::AMy_Character()
 {
@@ -31,6 +36,10 @@ AMy_Character::AMy_Character()
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
 
+//角色血量组件
+	
+	HPComponent=CreateDefaultSubobject<UHP_Component>(TEXT("HPComponent"));
+
 //获取角色移动组件
 
 	CharacterMovementComponent = GetCharacterMovement();
@@ -39,6 +48,26 @@ AMy_Character::AMy_Character()
 //背包组件
 	BeiBaoComponent = CreateDefaultSubobject<UMy_BeiBaoComponent>(TEXT("BeiBaoComponent"));
 
+}
+void AMy_Character::ShiJiaoDingShiQi()
+{
+	//获取世界定时器清除定时器
+
+	GetWorldTimerManager().ClearTimer(MyShiJiaoTimerHandle);
+	
+	GetWorldTimerManager().SetTimer(MyShiJiaoTimerHandle, this, &ThisClass::ShiJiaoPingHua, 0.01f, true);
+}
+void AMy_Character::ShiJiaoPingHua()
+{
+	//如果视角已经属于最大视角则取消定时器
+	if (TanHuangBiArmLength >= QieHuanRenCheng)
+	{
+		GetWorldTimerManager().ClearTimer(MyShiJiaoTimerHandle);
+	}
+	//设置玩家视角
+	TanHuangBiArmLength = FMath::FInterpTo(TanHuangBiArmLength, QieHuanRenCheng, 0.01f, 10.f);
+	SpringArmComponent->TargetArmLength = TanHuangBiArmLength;
+	//GetWorldTimerManager().ClearTimer(MyShiJiaoTimerHandle);
 }
 //角色移动
 void AMy_Character::MoveInput(const FInputActionValue& PlayInput)
@@ -95,12 +124,15 @@ void AMy_Character::ChuFaPengZhuangFunc(bool bPengZhuang)
 	ChuFaPengZhuang.ExecuteIfBound(bPengZhuang);
 }
 
-void AMy_Character::ChuLiShiQu(AActor* WuPin, UMyPrimaryDataAsset* WuPinShuJu)
+bool AMy_Character::ChuLiShiQu(AActor* WuPin, UMyPrimaryDataAsset* WuPinShuJu)
 {
 	//先判断物品和物品数据资产是否有效
-	if(!WuPin||!WuPinShuJu)return;
+	if (!WuPin || !WuPinShuJu) return false;
 	//将拾取的物品传递给背包组件
-	BeiBaoComponent->addWuPin(WuPinShuJu);
+	if(!BeiBaoComponent->addWuPin(WuPinShuJu))
+	{
+		return false;
+	}
 	
 	//根据物品数据资产的类型和数量进行相应的处理，比如增加玩家的属性，或者在角色上生成一个新的Actor（比如武器）
 	if(WuPinShuJu->CunFangActor)
@@ -127,18 +159,20 @@ void AMy_Character::ChuLiShiQu(AActor* WuPin, UMyPrimaryDataAsset* WuPinShuJu)
 		WeaponActor->AttachToComponent(GetMesh(),FAttachmentTransformRules::SnapToTargetIncludingScale, WuQiChaCao);
 
 		//玩家持有近战武器
-		if (WuPinShuJu->MYUELeiXing == EMYUELeiXing::WuQi_JinZhan)
+		if (WuPinShuJu->MYUELeiXing == EMYUELeiXing::WuQi_JinZhan && !bYiJingChiYouJinZhanWuQi)
 		{
 			bChiYouJinZhanWuQi = true;
+			bYiJingChiYouJinZhanWuQi = !bYiJingChiYouJinZhanWuQi;
+			ShiJiaoDingShiQi();
 		}
 
 	}
 	else
 	{
 		WeaponActor = nullptr;
-		return;
+		return true;
 	}
-
+	return true;
 }
 //切换近战动画
 UAnimMontage* AMy_Character::QieHuan()

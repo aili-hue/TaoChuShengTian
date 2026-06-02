@@ -34,6 +34,15 @@ public:
 	TObjectPtr<class UCameraComponent>CameraComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "弹簧臂长度")
 	float TanHuangBiArmLength = 0.f;
+	float QieHuanRenCheng = 100.f;
+
+	//定时器句柄
+	FTimerHandle MyShiJiaoTimerHandle;
+	//定时器函数
+	void ShiJiaoDingShiQi();
+	//平滑视角函数
+	void ShiJiaoPingHua();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "弹簧臂位置插槽")
 	FName ChaCaoName = TEXT("head");
 
@@ -78,7 +87,7 @@ public:
 	void ChuFaPengZhuangFunc(bool bPengZhuang);
 
 //角色触发拾取委托函数
-	void ChuLiShiQu(AActor* WuPin, UMyPrimaryDataAsset* WuPinShuJu);
+	bool ChuLiShiQu(AActor* WuPin, UMyPrimaryDataAsset* WuPinShuJu);
 //角色持有武器的插槽
 
 	UPROPERTY(EditAnywhere, Category = "角色武器插槽")
@@ -101,6 +110,8 @@ public:
 	void GongJiIpute();
 	//武器碰撞标志
 	bool bKaiQIPengZhuang = false;
+	//是否已经持有近战武器
+	bool bYiJingChiYouJinZhanWuQi = false;
 	//关闭近战武器碰撞函数
 	UFUNCTION(BlueprintCallable, Category = "关闭武器碰撞")
 	void GuangBiPengZhuang();
@@ -118,6 +129,11 @@ public:
 	float DunMax = 200.f;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "是否蹲下")
 	bool bShiFouDun = false;
+	//角色血量组件
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "血量组件")
+	TObjectPtr<class UHP_Component> HPComponent;
+
 private:
 
 //角色移动组件

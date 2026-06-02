@@ -21,7 +21,7 @@ public:
 	// Sets default values for this component's properties
 	UMy_BeiBaoComponent();
 
-	void addWuPin(UMyPrimaryDataAsset* ItemToAdd);
+	bool addWuPin(UMyPrimaryDataAsset* ItemToAdd);
 
 	UFUNCTION(BlueprintCallable, Category = "获取背包中物品数量")
 	int32 GetBeiBaoWuPinShuLiang(FName WuPinID);

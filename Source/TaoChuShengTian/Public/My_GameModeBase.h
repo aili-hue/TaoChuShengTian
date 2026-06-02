@@ -24,7 +24,4 @@ public:
 	int32 SuiJi_ShuJv_SuoYin = 0;
 
 	void MyXingWuPin(AActor_WuPin* WuPin);
-protected:
-	virtual void BeginPlay() override;
-
 };

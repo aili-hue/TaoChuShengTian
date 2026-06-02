@@ -87,13 +87,15 @@ void AActor_WuPin::ChuFaShiQuWeiTuo()
 	{
 		if (ZhiZhenMyCharacter.IsValid())
 		{
-			ZhiZhenMyCharacter->ChuLiShiQu(this, WuPinShuJu);
+			if(ZhiZhenMyCharacter->ChuLiShiQu(this, WuPinShuJu))
+			{
+				//如果角色成功拾取物品，就销毁物品
+				Destroy();
+			}
 			WeiTuoJvBing.Reset();
 		}
 		bIsChongDie = false;
 	}
-	Destroy();
-
 }
 // Called when the game starts or when spawned
 void AActor_WuPin::BeginPlay()
