@@ -51,23 +51,36 @@ AMy_Character::AMy_Character()
 }
 void AMy_Character::ShiJiaoDingShiQi()
 {
-	//获取世界定时器清除定时器
-
 	GetWorldTimerManager().ClearTimer(MyShiJiaoTimerHandle);
+
 	
-	GetWorldTimerManager().SetTimer(MyShiJiaoTimerHandle, this, &ThisClass::ShiJiaoPingHua, 0.01f, true);
+	bShiFouWanCheng_QieHuan = false;
+
+	
+	GetWorldTimerManager().SetTimer(MyShiJiaoTimerHandle, this, &ThisClass::ShiJiaoQingHua, 0.01f, true);
 }
-void AMy_Character::ShiJiaoPingHua()
+//设置弹簧臂长度
+void AMy_Character::ShiJiaoQingHua()
 {
-	//如果视角已经属于最大视角则取消定时器
-	if (TanHuangBiArmLength >= QieHuanRenCheng)
-	{
-		GetWorldTimerManager().ClearTimer(MyShiJiaoTimerHandle);
-	}
-	//设置玩家视角
-	TanHuangBiArmLength = FMath::FInterpTo(TanHuangBiArmLength, QieHuanRenCheng, 0.01f, 10.f);
+	// 核心逻辑：动态确定目标。有武器目标是 100，没武器目标是 0
+	float TargetValue = WeaponActor ? 100.f : 0.f;
+	// FInterpTo 会自动计算：从“当前值”到“目标值”的步进
+	TanHuangBiArmLength = FMath::FInterpTo(TanHuangBiArmLength, TargetValue, 0.01f, 10.f);
 	SpringArmComponent->TargetArmLength = TanHuangBiArmLength;
-	//GetWorldTimerManager().ClearTimer(MyShiJiaoTimerHandle);
+
+	// 既然在动，就还没完成
+	bShiFouWanCheng_QieHuan = false;
+
+	// 判断是否足够接近
+	if (FMath::IsNearlyEqual(TanHuangBiArmLength, TargetValue, 0.1f))
+	{
+		// 强行对齐，确保数值精确
+		TanHuangBiArmLength = TargetValue;
+		SpringArmComponent->TargetArmLength = TanHuangBiArmLength;
+
+		GetWorldTimerManager().ClearTimer(MyShiJiaoTimerHandle);
+		bShiFouWanCheng_QieHuan = true;
+	}
 }
 //角色移动
 void AMy_Character::MoveInput(const FInputActionValue& PlayInput)
@@ -111,13 +124,13 @@ void AMy_Character::ShiftInput(const FInputActionValue& PlayInput)
 	}
 }
 
-
+//拾取物品input
 void AMy_Character::ShiQuInput(const FInputActionValue& PlayInput)
 {
 	ShiQuWeiTuo.Broadcast();
 }
 
-
+//棒球棍碰撞
 void AMy_Character::ChuFaPengZhuangFunc(bool bPengZhuang)
 {
 	ChuFaPengZhuang.ExecuteIfBound(bPengZhuang);
@@ -161,8 +174,10 @@ bool AMy_Character::ChuLiShiQu(AActor* WuPin, UMyPrimaryDataAsset* WuPinShuJu)
 		if (WuPinShuJu->MYUELeiXing == EMYUELeiXing::WuQi_JinZhan && !bYiJingChiYouJinZhanWuQi)
 		{
 			bChiYouJinZhanWuQi = true;
+
 			bYiJingChiYouJinZhanWuQi = !bYiJingChiYouJinZhanWuQi;
 			ShiJiaoDingShiQi();
+			UE_LOG(LogTemp, Log, TEXT("测试"));
 		}
 
 	}
@@ -225,6 +240,21 @@ void AMy_Character::DunXiaInPut(const FInputActionValue& PlayInput)
 		return;
 	}
 	CharacterMovementComponent->MaxWalkSpeed = ChuShiYiDongSuDong;
+}
+//清空手上物品
+void AMy_Character::QingKongShouShangWuPin(const FInputActionValue& PlayInput)
+{
+	if (WeaponActor && bShiFouWanCheng_QieHuan)
+	{
+		WeaponActor->Destroy();
+		WeaponActor = nullptr;
+
+		//切换视角
+		bChiYouJinZhanWuQi = false;
+		bYiJingChiYouJinZhanWuQi = false;
+		
+		ShiJiaoDingShiQi();
+	}
 }
 
 
@@ -295,6 +325,10 @@ void AMy_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		if(IA_Dun)
 		{
 			ZengQiangComponent->BindAction(IA_Dun, ETriggerEvent::Started, this, &ThisClass::DunXiaInPut);
+		}
+		if(IA_Q)
+		{
+			ZengQiangComponent->BindAction(IA_Q, ETriggerEvent::Started, this, &ThisClass::QingKongShouShangWuPin);
 		}
 	}
 

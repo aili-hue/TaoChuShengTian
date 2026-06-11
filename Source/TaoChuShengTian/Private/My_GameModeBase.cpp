@@ -17,7 +17,6 @@ void AMy_GameModeBase::MyXingWuPin(AActor_WuPin* WuPin)
 	if (UMyPrimaryDataAsset* WuPPinShuJv = SuiJi_ShuJv[SuiJi_ShuJv_SuoYin])
 	{
 		WuPin->WuPinShuJu = WuPPinShuJv;
-
 	}
 	else
 	{
