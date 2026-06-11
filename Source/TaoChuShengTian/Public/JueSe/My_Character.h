@@ -34,14 +34,14 @@ public:
 	TObjectPtr<class UCameraComponent>CameraComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "弹簧臂长度")
 	float TanHuangBiArmLength = 0.f;
-	float QieHuanRenCheng = 100.f;
-
+	bool bShiFouWanCheng = false;
+	bool bShiFouWanCheng_QieHuan = false;
 	//定时器句柄
 	FTimerHandle MyShiJiaoTimerHandle;
 	//定时器函数
 	void ShiJiaoDingShiQi();
 	//平滑视角函数
-	void ShiJiaoPingHua();
+	void ShiJiaoQingHua();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "弹簧臂位置插槽")
 	FName ChaCaoName = TEXT("head");
@@ -67,6 +67,8 @@ public:
 	TObjectPtr<UInputAction>IA_Tab;
 	UPROPERTY(EditAnywhere, Category = "输入映射|蹲下")
 	TObjectPtr<UInputAction>IA_Dun;
+	UPROPERTY(EditAnywhere, Category = "输入映射|清空手上物品")
+	TObjectPtr<UInputAction>IA_Q;
 //角色映射调用函数
 
 	void MoveInput(const FInputActionValue&PlayInput);
@@ -77,6 +79,7 @@ public:
 	void GongtjiInput(const FInputActionValue& PlayInput);
 	void BeiBaoInPut(const FInputActionValue& PlayInput);
 	void DunXiaInPut(const FInputActionValue& PlayInput);
+	void QingKongShouShangWuPin(const FInputActionValue& PlayInput);
 //角色拾取委托
 
 	FShiQuWeiTuo ShiQuWeiTuo;

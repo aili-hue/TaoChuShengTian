@@ -15,8 +15,6 @@ class TAOCHUSHENGTIAN_API UHP_Component : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UHP_Component();
-
-
 //ÑªÁ¿Âß¼­	
 	UFUNCTION(BlueprintCallable, Category="¼ÓÑª")
 	void AddHP(float DeltaHP);
@@ -35,5 +33,4 @@ protected:
 	virtual void BeginPlay() override;
 public:	
 
-		
 };
