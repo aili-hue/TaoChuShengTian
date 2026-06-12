@@ -80,6 +80,7 @@ public:
 	void BeiBaoInPut(const FInputActionValue& PlayInput);
 	void DunXiaInPut(const FInputActionValue& PlayInput);
 	void QingKongShouShangWuPin(const FInputActionValue& PlayInput);
+
 //角色拾取委托
 
 	FShiQuWeiTuo ShiQuWeiTuo;

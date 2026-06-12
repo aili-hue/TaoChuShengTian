@@ -102,6 +102,7 @@ void AMy_Character::ShuBiao_YiDongInput(const FInputActionValue& PlayInput)
 	FVector2D ShuBiaoYIDongVector2D = PlayInput.Get<FVector2D>();
 	AddControllerYawInput(ShuBiaoYIDongVector2D.X);
 	AddControllerPitchInput(ShuBiaoYIDongVector2D.Y);
+	
 }
 
 void AMy_Character::JumpInput(const FInputActionValue& PlayInput)
