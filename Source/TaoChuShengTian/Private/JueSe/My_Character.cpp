@@ -18,7 +18,6 @@
 
 #include "BeiBao/My_BeiBaoComponent.h"
 
-#include"TimerManager.h"
 
 #include "HP/HP_Component.h"
 
@@ -64,6 +63,10 @@ void AMy_Character::ShiJiaoQingHua()
 {
 	// 核心逻辑：动态确定目标。有武器目标是 100，没武器目标是 0
 	float TargetValue = WeaponActor ? 100.f : 0.f;
+
+	//如果过近就切换第一人称
+	if (bShiFouGuoJin && TargetValue != 0.f)TargetValue = 0.f;
+
 	// FInterpTo 会自动计算：从“当前值”到“目标值”的步进
 	TanHuangBiArmLength = FMath::FInterpTo(TanHuangBiArmLength, TargetValue, 0.01f, 10.f);
 	SpringArmComponent->TargetArmLength = TanHuangBiArmLength;
@@ -82,6 +85,8 @@ void AMy_Character::ShiJiaoQingHua()
 		bShiFouWanCheng_QieHuan = true;
 	}
 }
+
+
 //角色移动
 void AMy_Character::MoveInput(const FInputActionValue& PlayInput)
 {
@@ -209,6 +214,7 @@ void AMy_Character::GongtjiInput(const FInputActionValue& PlayInput)
 {
 	//如果角色没有武器，就无法攻击
 	if (!WeaponActor)return;
+	if (!bShiFouKeYiGongJi)return;
 	//如果角色持有近战武器，就触发攻击事件
 	if (bChiYouJinZhanWuQi && !bKaiQIPengZhuang && !bShiFouDun)
 	{
@@ -258,6 +264,17 @@ void AMy_Character::QingKongShouShangWuPin(const FInputActionValue& PlayInput)
 	}
 }
 
+
+void AMy_Character::SteMoveMent(float MaxSuDu)
+{
+	CharacterMovementComponent->MaxWalkSpeed = MaxSuDu;
+}
+//角色自身速度
+float AMy_Character::GetMoveMent()
+{
+	float sudu = GetCharacterMovement()->MaxWalkSpeed;
+	return sudu;
+}
 
 // Called when the game starts or when spawned
 void AMy_Character::BeginPlay()
