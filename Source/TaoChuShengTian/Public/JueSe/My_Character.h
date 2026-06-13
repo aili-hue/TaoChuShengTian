@@ -36,13 +36,14 @@ public:
 	float TanHuangBiArmLength = 0.f;
 	bool bShiFouWanCheng = false;
 	bool bShiFouWanCheng_QieHuan = false;
+	bool bShiFouKeYiGongJi = true;
 	//定时器句柄
 	FTimerHandle MyShiJiaoTimerHandle;
 	//定时器函数
 	void ShiJiaoDingShiQi();
 	//平滑视角函数
 	void ShiJiaoQingHua();
-
+	bool bShiFouGuoJin = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "弹簧臂位置插槽")
 	FName ChaCaoName = TEXT("head");
 
@@ -167,4 +168,6 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void SteMoveMent(float MaxSuDu);
+	float GetMoveMent();
 };

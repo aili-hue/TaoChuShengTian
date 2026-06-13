@@ -39,6 +39,22 @@ void AActor_door::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCompone
 		{
 			JueSe = TargetChar;
 			DelegateHandle = JueSe->ShiQuWeiTuo.AddUObject(this, &ThisClass::ShiFouKaiQiWuLi, true);
+			//设置视角和速度
+			if (JueSe->GetMoveMent() != 130.f)
+			{
+				JueSeSuDuQian = JueSe->GetMoveMent();
+			}
+			else
+			{
+				JueSeSuDuQian = 230.f;
+			}
+			//限制玩家攻击
+			JueSe->bShiFouKeYiGongJi = false;
+
+			JueSe->SteMoveMent(130.f);
+
+			JueSe->bShiFouGuoJin = true;
+			JueSe->ShiJiaoDingShiQi();
 		}
 
 	}
@@ -46,8 +62,18 @@ void AActor_door::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCompone
 
 void AActor_door::OnComponentBeginEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if(JueSe.IsValid())
+	if (JueSe.IsValid() && OtherActor == JueSe.Get())
 	{
+		//切换视角和速度
+		JueSe->bShiFouKeYiGongJi = true;
+
+		JueSe->SteMoveMent(JueSeSuDuQian);
+
+		//限制玩家攻击
+		JueSe->bShiFouGuoJin = false;
+
+		JueSe->ShiJiaoDingShiQi();
+
 		JueSe->ShiQuWeiTuo.Remove(DelegateHandle);
 
 		DelegateHandle.Reset();
