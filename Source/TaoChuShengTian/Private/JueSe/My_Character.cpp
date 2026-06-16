@@ -99,6 +99,48 @@ void AMy_Character::MoveInput(const FInputActionValue& PlayInput)
 	AddMovementInput(JvZhen_X, MoveVector2D.Y);
 	AddMovementInput(JvZhen_Y, MoveVector2D.X);
 
+	//加速限制
+	if (!bShiFouJiaSu)return;
+	float MoveSuDu = GetMoveMent();
+	if (MoveSuDu < MaxYiDongSuDong)return;
+
+	Nall -= 0.09f * GetWorld()->GetDeltaSeconds();
+	GetNa();
+	if (Nall <= 0.f)
+	{
+		Nall = 0.f;
+		bShiFouJiaSu = false;
+		CharacterMovementComponent->MaxWalkSpeed = ChuShiYiDongSuDong;
+		//回复体力
+		HuiFuTiLi();
+		UE_LOG(LogTemp, Log, TEXT("测试"));
+	}
+
+}
+
+void AMy_Character::MoveInput_WanCheng(const FInputActionValue& PlayInput)
+{
+	float MoveSuDu = GetMoveMent();
+	if (!bShiFouJiaSu && MoveSuDu > ChuShiYiDongSuDong)return;
+	HuiFuTiLi();
+}
+
+void AMy_Character::HuiFuTiLi()
+{
+	GetWorldTimerManager().ClearTimer(TimerHandleDiLi);
+	GetWorldTimerManager().SetTimer(TimerHandleDiLi, this, &ThisClass::ZengJiaTiLi, 0.1f, true);
+}
+
+void AMy_Character::ZengJiaTiLi()
+{
+	if(Nall>=1.f)
+	{
+		GetWorldTimerManager().ClearTimer(TimerHandleDiLi);
+		Nall = 1.f;
+		return;
+	}
+	GetNa();
+	Nall += 0.2f * GetWorld()->GetDeltaSeconds();
 }
 
 //鼠标移动视角
@@ -122,14 +164,15 @@ void AMy_Character::ShiftInput(const FInputActionValue& PlayInput)
 	if (CharacterMovementComponent->MaxWalkSpeed == ChuShiYiDongSuDong && !bShiFouDun)
 	{
 		CharacterMovementComponent->MaxWalkSpeed = MaxYiDongSuDong;
+		bShiFouJiaSu = true;
 		return;
 	}
 	if(!bShiFouDun)
 	{
 		CharacterMovementComponent->MaxWalkSpeed = ChuShiYiDongSuDong;
+		bShiFouJiaSu = false;
 	}
 }
-
 //拾取物品input
 void AMy_Character::ShiQuInput(const FInputActionValue& PlayInput)
 {
@@ -183,7 +226,6 @@ bool AMy_Character::ChuLiShiQu(AActor* WuPin, UMyPrimaryDataAsset* WuPinShuJu)
 
 			bYiJingChiYouJinZhanWuQi = !bYiJingChiYouJinZhanWuQi;
 			ShiJiaoDingShiQi();
-			UE_LOG(LogTemp, Log, TEXT("测试"));
 		}
 
 	}
@@ -276,6 +318,10 @@ float AMy_Character::GetMoveMent()
 	return sudu;
 }
 
+void AMy_Character::ShiftInput_Ting()
+{
+}
+
 // Called when the game starts or when spawned
 void AMy_Character::BeginPlay()
 {
@@ -294,7 +340,6 @@ void AMy_Character::BeginPlay()
 			}
 		}
 	}
-
 }
 
 // Called every frame
@@ -315,6 +360,7 @@ void AMy_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		if(IA_Move)
 		{
 			ZengQiangComponent->BindAction(IA_Move, ETriggerEvent::Triggered, this, &ThisClass::MoveInput);
+			ZengQiangComponent->BindAction(IA_Move, ETriggerEvent::Completed, this, &ThisClass::MoveInput_WanCheng);
 		}
 		if(IA_ShuBiao_YiDong)
 		{

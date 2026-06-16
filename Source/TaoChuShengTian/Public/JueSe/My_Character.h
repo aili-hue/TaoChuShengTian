@@ -73,9 +73,12 @@ public:
 //角色映射调用函数
 
 	void MoveInput(const FInputActionValue&PlayInput);
+	void MoveInput_WanCheng(const FInputActionValue&PlayInput);
+
 	void ShuBiao_YiDongInput(const FInputActionValue& PlayInput);
 	void JumpInput(const FInputActionValue& PlayInput);
 	void ShiftInput(const FInputActionValue& PlayInput);
+
 	void ShiQuInput(const FInputActionValue& PlayInput);
 	void GongtjiInput(const FInputActionValue& PlayInput);
 	void BeiBaoInPut(const FInputActionValue& PlayInput);
@@ -139,6 +142,16 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "血量组件")
 	TObjectPtr<class UHP_Component> HPComponent;
 
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = "耐力值")
+	float Nall = 1.0f;
+	UFUNCTION(BlueprintCallable, Category = "获取耐力数值")
+	float GetNallllllll() { return Nall; };
+	UFUNCTION(BlueprintImplementableEvent, Category = "获取耐力数值")
+	void GetNa();
+
+	void HuiFuTiLi();
+	void ZengJiaTiLi();
+	FTimerHandle TimerHandleDiLi;
 private:
 
 //角色移动组件
@@ -151,6 +164,10 @@ private:
 	float ChuShiYiDongSuDong = 230.f;
 	float MaxYiDongSuDong = 500.f;
 
+	void ShiftInput_Ting();
+
+
+	bool bShiFouJiaSu = false;
 //Actor指针，用来绑定武器
 
 	UPROPERTY()

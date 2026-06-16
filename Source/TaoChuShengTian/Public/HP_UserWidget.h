@@ -16,5 +16,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "ÑªÁ¿×´Ì¬")
 	FLinearColor HP_Zhuang_Cool(float HP);
-	
+	UFUNCTION(BlueprintImplementableEvent, Category = "ËÀÍö")
+	void SiWang();
 };
