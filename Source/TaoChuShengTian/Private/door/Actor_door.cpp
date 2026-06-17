@@ -43,6 +43,8 @@ void AActor_door::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCompone
 			if (JueSe->GetMoveMent() != 130.f)
 			{
 				JueSeSuDuQian = JueSe->GetMoveMent();
+				JueSe->bShiFouJiaSu = false;
+				JueSe->HuiFuTiLi();
 			}
 			else
 			{
@@ -67,6 +69,7 @@ void AActor_door::OnComponentBeginEnd(UPrimitiveComponent* OverlappedComponent, 
 		//切换视角和速度
 		JueSe->bShiFouKeYiGongJi = true;
 
+		if (JueSeSuDuQian > 230.f) { JueSe->bShiFouJiaSu = true; }
 		JueSe->SteMoveMent(JueSeSuDuQian);
 
 		//限制玩家攻击

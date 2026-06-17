@@ -152,6 +152,9 @@ public:
 	void HuiFuTiLi();
 	void ZengJiaTiLi();
 	FTimerHandle TimerHandleDiLi;
+	//移动状态
+	bool bShiFouJiaSu = false;
+
 private:
 
 //角色移动组件
@@ -167,7 +170,6 @@ private:
 	void ShiftInput_Ting();
 
 
-	bool bShiFouJiaSu = false;
 //Actor指针，用来绑定武器
 
 	UPROPERTY()
