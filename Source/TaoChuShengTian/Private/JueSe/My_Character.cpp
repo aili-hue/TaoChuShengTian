@@ -100,12 +100,14 @@ void AMy_Character::MoveInput(const FInputActionValue& PlayInput)
 	AddMovementInput(JvZhen_Y, MoveVector2D.X);
 
 	//加速限制
+
 	if (!bShiFouJiaSu)return;
-	float MoveSuDu = GetMoveMent();
-	if (MoveSuDu < MaxYiDongSuDong)return;
+
+	if (GetWorldTimerManager().IsTimerActive(TimerHandleDiLi))GetWorldTimerManager().ClearTimer(TimerHandleDiLi);
 
 	Nall -= 0.09f * GetWorld()->GetDeltaSeconds();
 	GetNa();
+
 	if (Nall <= 0.f)
 	{
 		Nall = 0.f;
@@ -113,7 +115,6 @@ void AMy_Character::MoveInput(const FInputActionValue& PlayInput)
 		CharacterMovementComponent->MaxWalkSpeed = ChuShiYiDongSuDong;
 		//回复体力
 		HuiFuTiLi();
-		UE_LOG(LogTemp, Log, TEXT("测试"));
 	}
 
 }
@@ -127,7 +128,7 @@ void AMy_Character::MoveInput_WanCheng(const FInputActionValue& PlayInput)
 
 void AMy_Character::HuiFuTiLi()
 {
-	GetWorldTimerManager().ClearTimer(TimerHandleDiLi);
+	if (GetWorldTimerManager().IsTimerActive(TimerHandleDiLi))return;
 	GetWorldTimerManager().SetTimer(TimerHandleDiLi, this, &ThisClass::ZengJiaTiLi, 0.1f, true);
 }
 
@@ -161,7 +162,7 @@ void AMy_Character::JumpInput(const FInputActionValue& PlayInput)
 void AMy_Character::ShiftInput(const FInputActionValue& PlayInput)
 {
 	//如果移动速度属于正常移动速度且不属于蹲下，就可以加速
-	if (CharacterMovementComponent->MaxWalkSpeed == ChuShiYiDongSuDong && !bShiFouDun)
+	if (CharacterMovementComponent->MaxWalkSpeed == ChuShiYiDongSuDong && !bShiFouDun && Nall >= 0.3f)
 	{
 		CharacterMovementComponent->MaxWalkSpeed = MaxYiDongSuDong;
 		bShiFouJiaSu = true;
@@ -170,6 +171,8 @@ void AMy_Character::ShiftInput(const FInputActionValue& PlayInput)
 	if(!bShiFouDun)
 	{
 		CharacterMovementComponent->MaxWalkSpeed = ChuShiYiDongSuDong;
+		HuiFuTiLi();
+
 		bShiFouJiaSu = false;
 	}
 }
