@@ -18,7 +18,6 @@
 
 #include "BeiBao/My_BeiBaoComponent.h"
 
-
 #include "HP/HP_Component.h"
 
 
@@ -90,6 +89,7 @@ void AMy_Character::ShiJiaoQingHua()
 //角色移动
 void AMy_Character::MoveInput(const FInputActionValue& PlayInput)
 {
+	if (bKaiQi_BeiBao)return;
 
 	FVector2D MoveVector2D = PlayInput.Get<FVector2D>();
 	FRotator MoveRotator = Controller->GetControlRotation();
@@ -144,9 +144,66 @@ void AMy_Character::ZengJiaTiLi()
 	Nall += 0.2f * GetWorld()->GetDeltaSeconds();
 }
 
+void AMy_Character::HuoQuShuJv(UMyPrimaryDataAsset* WuPinShuJv)
+{
+	if(WuPinShuJv)
+	{
+		ShuChengWupin(WuPinShuJv);
+	}
+
+}
+
+void AMy_Character::ShuChengWupin(UMyPrimaryDataAsset* WuPinShuJv)
+{
+	if (!WuPinShuJv)return;
+	//根据物品数据资产的类型和数量进行相应的处理，比如增加玩家的属性，或者在角色上生成一个新的Actor（比如武器）
+	if (WuPinShuJv->CunFangActor)
+	{
+		//如果角色上已经有了武器，就先销毁原来的武器
+		if (WeaponActor)
+		{
+			WeaponActor->Destroy();
+			WeaponActor = nullptr;
+		}
+		//设置生成Actor参数
+		FActorSpawnParameters ShengChengActorCanShu;
+		//设置角色为生成Actor的拥有者
+		ShengChengActorCanShu.Owner = this;
+		//设置角色为生成Actor的触发者
+		ShengChengActorCanShu.Instigator = this;
+		//生成Actor，并将生成的Actor指针赋值给WeaponActor
+		WeaponActor = GetWorld()->SpawnActor<AActor>(WuPinShuJv->CunFangActor, ShengChengActorCanShu);
+		UE_LOG(LogTemp, Log, TEXT("成功"));
+	}
+	//如果生成了武器Actor，就将它绑定到角色的武器插槽上
+	if (WeaponActor)
+	{
+		//将生成的武器Actor绑定到角色的武器插槽上
+		WeaponActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WuQiChaCao);
+
+		//玩家持有近战武器
+		if (WuPinShuJv->MYUELeiXing == EMYUELeiXing::WuQi_JinZhan && !bYiJingChiYouJinZhanWuQi)
+		{
+			bChiYouJinZhanWuQi = true;
+
+			bYiJingChiYouJinZhanWuQi = !bYiJingChiYouJinZhanWuQi;
+			ShiJiaoDingShiQi();
+		}
+
+	}
+	else
+	{
+		WeaponActor = nullptr;
+	}
+
+}
+
+
 //鼠标移动视角
 void AMy_Character::ShuBiao_YiDongInput(const FInputActionValue& PlayInput)
 {
+	if (bKaiQi_BeiBao)return;
+
 	FVector2D ShuBiaoYIDongVector2D = PlayInput.Get<FVector2D>();
 	AddControllerYawInput(ShuBiaoYIDongVector2D.X);
 	AddControllerPitchInput(ShuBiaoYIDongVector2D.Y);
@@ -155,12 +212,16 @@ void AMy_Character::ShuBiao_YiDongInput(const FInputActionValue& PlayInput)
 
 void AMy_Character::JumpInput(const FInputActionValue& PlayInput)
 {
+	if (bKaiQi_BeiBao)return;
+
 	Jump();
 }
 
 //角色加速度
 void AMy_Character::ShiftInput(const FInputActionValue& PlayInput)
 {
+	if (bKaiQi_BeiBao)return;
+
 	//如果移动速度属于正常移动速度且不属于蹲下，就可以加速
 	if (CharacterMovementComponent->MaxWalkSpeed == ChuShiYiDongSuDong && !bShiFouDun && Nall >= 0.3f)
 	{
@@ -179,6 +240,8 @@ void AMy_Character::ShiftInput(const FInputActionValue& PlayInput)
 //拾取物品input
 void AMy_Character::ShiQuInput(const FInputActionValue& PlayInput)
 {
+	if (bKaiQi_BeiBao)return;
+
 	ShiQuWeiTuo.Broadcast();
 }
 
@@ -197,46 +260,7 @@ bool AMy_Character::ChuLiShiQu(AActor* WuPin, UMyPrimaryDataAsset* WuPinShuJu)
 	{
 		return false;
 	}
-	
-	//根据物品数据资产的类型和数量进行相应的处理，比如增加玩家的属性，或者在角色上生成一个新的Actor（比如武器）
-	if(WuPinShuJu->CunFangActor)
-	{
-		//如果角色上已经有了武器，就先销毁原来的武器
-		if (WeaponActor)
-		{ 
-			WeaponActor->Destroy();
-			WeaponActor = nullptr;
-		}
-		//设置生成Actor参数
-		FActorSpawnParameters ShengChengActorCanShu;
-		//设置角色为生成Actor的拥有者
-		ShengChengActorCanShu.Owner = this;
-		//设置角色为生成Actor的触发者
-		ShengChengActorCanShu.Instigator = this;
-		//生成Actor，并将生成的Actor指针赋值给WeaponActor
-		WeaponActor = GetWorld()->SpawnActor<AActor>(WuPinShuJu->CunFangActor,FVector::ZeroVector,FRotator::ZeroRotator, ShengChengActorCanShu);
-	}
-	//如果生成了武器Actor，就将它绑定到角色的武器插槽上
-	if(WeaponActor)
-	{
-		//将生成的武器Actor绑定到角色的武器插槽上
-		WeaponActor->AttachToComponent(GetMesh(),FAttachmentTransformRules::SnapToTargetIncludingScale, WuQiChaCao);
-
-		//玩家持有近战武器
-		if (WuPinShuJu->MYUELeiXing == EMYUELeiXing::WuQi_JinZhan && !bYiJingChiYouJinZhanWuQi)
-		{
-			bChiYouJinZhanWuQi = true;
-
-			bYiJingChiYouJinZhanWuQi = !bYiJingChiYouJinZhanWuQi;
-			ShiJiaoDingShiQi();
-		}
-
-	}
-	else
-	{
-		WeaponActor = nullptr;
-		return true;
-	}
+	ShuChengWupin(WuPinShuJu);
 	return true;
 }
 //切换近战动画
@@ -257,6 +281,8 @@ void AMy_Character::GuangBiPengZhuang()
 }
 void AMy_Character::GongtjiInput(const FInputActionValue& PlayInput)
 {
+	if (bKaiQi_BeiBao)return;
+
 	//如果角色没有武器，就无法攻击
 	if (!WeaponActor)return;
 	if (!bShiFouKeYiGongJi)return;
@@ -275,20 +301,31 @@ void AMy_Character::BeiBaoInPut(const FInputActionValue& PlayInput)
 	if(!bKaiQi_BeiBao)
 	{
 		DaKaiBeiBao();
+		APlayerController* PlayerController = Cast<APlayerController>(GetController());
+		if (PlayerController)PlayerController->SetShowMouseCursor(true);
+
 		bKaiQi_BeiBao = !bKaiQi_BeiBao;
 		return;
 	}
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController)PlayerController->SetShowMouseCursor(false);
 
 	GuanBiBeiBao();
 	bKaiQi_BeiBao = !bKaiQi_BeiBao;
+
 }
 //蹲下
 void AMy_Character::DunXiaInPut(const FInputActionValue& PlayInput)
 {
+
+	if (bKaiQi_BeiBao)return;
+
 	bShiFouDun = !bShiFouDun;
 	if(bShiFouDun)
 	{
 		CharacterMovementComponent->MaxWalkSpeed = DunMax;
+		bShiFouJiaSu = false;
+		HuiFuTiLi();
 		return;
 	}
 	CharacterMovementComponent->MaxWalkSpeed = ChuShiYiDongSuDong;
@@ -296,6 +333,8 @@ void AMy_Character::DunXiaInPut(const FInputActionValue& PlayInput)
 //清空手上物品
 void AMy_Character::QingKongShouShangWuPin(const FInputActionValue& PlayInput)
 {
+	if (bKaiQi_BeiBao)return;
+
 	if (WeaponActor && bShiFouWanCheng_QieHuan)
 	{
 		WeaponActor->Destroy();
