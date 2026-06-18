@@ -33,7 +33,7 @@ bool UMy_BeiBaoComponent::addWuPin(UMyPrimaryDataAsset* ItemToAdd)
 		WuPinShuLiang = WuPinShuJv[WuPinID] + ShuLiang;
 		WuPinShuJv[WuPinID] = WuPinShuLiang;
 	}
-	WuPinXinXi(WuPinID, WuPinShuLiang, Texture2D);
+	WuPinXinXi(WuPinID, WuPinShuLiang, Texture2D, ItemToAdd);
 
 	return true;
 }
@@ -60,9 +60,9 @@ TArray<UMyPrimaryDataAsset*> UMy_BeiBaoComponent::ShiQUWuPinShuJv()
 	return JieGuo;
 }
 
-void UMy_BeiBaoComponent::WuPinXinXi(FName WuPinID, int32 WuPinShuLiang, UTexture2D* TuXiang)
+void UMy_BeiBaoComponent::WuPinXinXi(FName WuPinID, int32 WuPinShuLiang, UTexture2D* TuXiang, UMyPrimaryDataAsset* WuPinShuJvZiChan)
 {
-	GengXin.Broadcast(WuPinID, WuPinShuLiang, TuXiang);
+	GengXin.Broadcast(WuPinID, WuPinShuLiang, TuXiang, WuPinShuJvZiChan);
 }
 
 // Called when the game starts

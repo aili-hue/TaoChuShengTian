@@ -10,7 +10,8 @@
 class UMyPrimaryDataAsset;
 
 //更新背包
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FGengXin, FName, ItemID, int32, NewCount,UTexture2D*,TuXiang);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FGengXin, FName, ItemID, int32, NewCount, UTexture2D*, TuXiang, UMyPrimaryDataAsset*, WuPinShuJvZiChan);
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TAOCHUSHENGTIAN_API UMy_BeiBaoComponent : public UActorComponent
@@ -29,7 +30,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<UMyPrimaryDataAsset*> ShiQUWuPinShuJv();
 
-	void WuPinXinXi(FName WuPinID, int32 WuPinShuLiang, UTexture2D* TuXiang);
+	void WuPinXinXi(FName WuPinID, int32 WuPinShuLiang, UTexture2D* TuXiang, UMyPrimaryDataAsset* WuPinShuJvZiChan);
 	//背包更新
 	UPROPERTY(BlueprintAssignable, Category = "背包更新数据")
 	FGengXin GengXin;

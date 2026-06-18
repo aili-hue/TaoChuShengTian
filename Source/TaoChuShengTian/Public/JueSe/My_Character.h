@@ -16,6 +16,7 @@ DECLARE_MULTICAST_DELEGATE(FShiQuWeiTuo);
 //设置物品碰撞委托声明
 DECLARE_DELEGATE_OneParam(FChuFaPengZhuang, bool);
 
+class UMyPrimaryDataAsset;
 
 UCLASS()
 class TAOCHUSHENGTIAN_API AMy_Character : public ACharacter
@@ -155,6 +156,10 @@ public:
 	//移动状态
 	bool bShiFouJiaSu = false;
 
+    //物品数据
+	UFUNCTION(BlueprintCallable, Category = "物品数据")
+	void HuoQuShuJv(UMyPrimaryDataAsset* WuPinShuJv);
+	void ShuChengWupin(UMyPrimaryDataAsset* WuPinShuJv);
 private:
 
 //角色移动组件
