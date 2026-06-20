@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -16,11 +16,11 @@ class TAOCHUSHENGTIAN_API AMy_GameModeBase : public AGameModeBase
 
 
 public:
-	UPROPERTY(EditAnywhere, Category = "ËùÓĞ±¨µÀµÄActorÎïÆ·")
+	UPROPERTY(EditAnywhere, Category = "æ‰€æœ‰æŠ¥é“çš„Actorç‰©å“")
 	TArray<TObjectPtr<class AActor_WuPin>>WuPinActor;
-	UPROPERTY(EditAnywhere, Category = "Êı¾İ")
+	UPROPERTY(EditAnywhere, Category = "æ•°æ®")
 	TArray<TObjectPtr<class UMyPrimaryDataAsset>>SuiJi_ShuJv;
-	//Ëæ»úÎïÆ·Ë÷Òı
+	//éšæœºç‰©å“ç´¢å¼•
 	int32 SuiJi_ShuJv_SuoYin = 0;
 
 	void MyXingWuPin(AActor_WuPin* WuPin);

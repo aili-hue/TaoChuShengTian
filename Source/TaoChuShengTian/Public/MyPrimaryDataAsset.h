@@ -4,13 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include"Components/StaticMeshComponent.h"
+
 #include "MyPrimaryDataAsset.generated.h"
 
 UENUM(BlueprintType)
 enum class EMYUELeiXing : uint8
 {
 	WuQi_JinZhan UMETA(DisplayName = "近战武器"),
-	YaoPin UMETA(DisplayName = "药品")
+	YaoPin UMETA(DisplayName = "药品"),
+	ZhaoMing UMETA(DisplayName = "照明")
 };
 
 UCLASS(BlueprintType)
@@ -28,6 +31,8 @@ public:
 	TObjectPtr<UTexture2D>Texture2D;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "物品数量")
 	int32 ShuLiang = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "物品存放角色插槽")
+	FName WuQinCao;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "物品功能")
 	TSubclassOf<AActor>CunFangActor;
 };

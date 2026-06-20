@@ -15,6 +15,8 @@
 DECLARE_MULTICAST_DELEGATE(FShiQuWeiTuo);
 //设置物品碰撞委托声明
 DECLARE_DELEGATE_OneParam(FChuFaPengZhuang, bool);
+//打开手电筒
+DECLARE_DELEGATE_OneParam(FDaiKai, bool);
 
 class UMyPrimaryDataAsset;
 
@@ -26,7 +28,7 @@ class TAOCHUSHENGTIAN_API AMy_Character : public ACharacter
 public:
 
 	AMy_Character();
-
+	
 //角色视角（摄像机，弹簧臂）
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -71,6 +73,9 @@ public:
 	TObjectPtr<UInputAction>IA_Dun;
 	UPROPERTY(EditAnywhere, Category = "输入映射|清空手上物品")
 	TObjectPtr<UInputAction>IA_Q;
+
+	UPROPERTY(EditAnywhere, Category = "输入映射|打开手电筒")
+	TObjectPtr<UInputAction>IA_F;
 //角色映射调用函数
 
 	void MoveInput(const FInputActionValue&PlayInput);
@@ -86,6 +91,8 @@ public:
 	void DunXiaInPut(const FInputActionValue& PlayInput);
 	void QingKongShouShangWuPin(const FInputActionValue& PlayInput);
 
+	void FDaiKaiShouDianTong(const FInputActionValue& PlayInput);
+
 //角色拾取委托
 
 	FShiQuWeiTuo ShiQuWeiTuo;
@@ -97,10 +104,6 @@ public:
 
 //角色触发拾取委托函数
 	bool ChuLiShiQu(AActor* WuPin, UMyPrimaryDataAsset* WuPinShuJu);
-//角色持有武器的插槽
-
-	UPROPERTY(EditAnywhere, Category = "角色武器插槽")
-	FName WuQiChaCao = TEXT("hand_wuqichacao");
 //角色是否拥有武器|近战
 
 	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = "是否持有近战武器")
@@ -160,6 +163,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "物品数据")
 	void HuoQuShuJv(UMyPrimaryDataAsset* WuPinShuJv);
 	void ShuChengWupin(UMyPrimaryDataAsset* WuPinShuJv);
+	bool ShiFouXiaoHui = false;
+	bool bShiFouKeYi_Tab = true;
+	//打开手电筒委托
+	FDaiKai DaiKai;
+	void DaKaiShoDianTong();
+	//是否开灯
+	bool bShiFouKaiQiShouDian = false;
+	//是否拥有手电筒
+	UPROPERTY(BlueprintReadOnly, Category = "是否拥有手电筒")
+	bool bShiFouYongYou = false;
+
 private:
 
 //角色移动组件

@@ -48,17 +48,18 @@ int32 UMy_BeiBaoComponent::GetBeiBaoWuPinShuLiang(FName WuPinID)
 	return 0;
 }
 
-TArray<UMyPrimaryDataAsset*> UMy_BeiBaoComponent::ShiQUWuPinShuJv()
-{
-	TArray<UMyPrimaryDataAsset*>JieGuo;
-	//数组预留WuPinZiChanDiTu的位数
-	JieGuo.Reserve(WuPinZiChanDiTu.Num());
-	//遍历tmap并将值写入数组中
-	for(const auto& WuPinZiChanDiT: WuPinZiChanDiTu)
-	{
-	}
-	return JieGuo;
-}
+//TArray<UMyPrimaryDataAsset*> UMy_BeiBaoComponent::ShiQUWuPinShuJv()
+//{
+//	TArray<UMyPrimaryDataAsset*>JieGuo;
+//	//数组预留WuPinZiChanDiTu的位数
+//	JieGuo.Reserve(WuPinZiChanDiTu.Num());
+//	//遍历tmap并将值写入数组中
+//	for(const auto& WuPinZiChanDiT: WuPinZiChanDiTu)
+//	{
+//		JieGuo.Add(WuPinZiChanDiT.Value);
+//	}
+//	return JieGuo;
+//}
 
 void UMy_BeiBaoComponent::WuPinXinXi(FName WuPinID, int32 WuPinShuLiang, UTexture2D* TuXiang, UMyPrimaryDataAsset* WuPinShuJvZiChan)
 {

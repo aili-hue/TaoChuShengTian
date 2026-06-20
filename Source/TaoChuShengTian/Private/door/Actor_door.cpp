@@ -38,6 +38,8 @@ void AActor_door::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCompone
 		if (TargetChar)
 		{
 			JueSe = TargetChar;
+			JueSe->bShiFouKeYi_Tab = false;
+
 			DelegateHandle = JueSe->ShiQuWeiTuo.AddUObject(this, &ThisClass::ShiFouKaiQiWuLi, true);
 			//设置视角和速度
 			if (JueSe->GetMoveMent() != 130.f)
@@ -66,6 +68,7 @@ void AActor_door::OnComponentBeginEnd(UPrimitiveComponent* OverlappedComponent, 
 {
 	if (JueSe.IsValid() && OtherActor == JueSe.Get())
 	{
+		JueSe->bShiFouKeYi_Tab = true;
 		//切换视角和速度
 		JueSe->bShiFouKeYiGongJi = true;
 

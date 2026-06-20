@@ -97,6 +97,23 @@ void AActor_WuPin::ChuFaShiQuWeiTuo()
 		bIsChongDie = false;
 	}
 }
+void AActor_WuPin::SuiJi()
+{
+	//根据物品数据资产设置静态网格体和高光材质
+
+	if (WuPin_ShuJv.Contains(WuPinShuJu) && WuPinShuJu)
+	{
+		//字典中包含物品数据资产
+
+		StaticMeshComponent->SetStaticMesh(WuPin_ShuJv[WuPinShuJu]);
+		StaticMeshGaoGuang->SetStaticMesh(WuPin_ShuJv[WuPinShuJu]);
+		StaticMeshGaoGuang->SetMaterial(0, GaoGuangCaiZhi);
+
+		StaticMeshGaoGuang->SetVisibility(bIsChongDie);
+
+	}
+
+}
 // Called when the game starts or when spawned
 void AActor_WuPin::BeginPlay()
 {
@@ -105,20 +122,7 @@ void AActor_WuPin::BeginPlay()
 	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnOverlapBegin);
 	SphereComponent->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnOverlapEnd);
 
-	//根据物品数据资产设置静态网格体和高光材质
-
-	if(WuPin_ShuJv.Contains(WuPinShuJu)&& WuPinShuJu)
-	{
-		//字典中包含物品数据资产
-
-		StaticMeshComponent->SetStaticMesh(WuPin_ShuJv[WuPinShuJu]);
-		StaticMeshGaoGuang->SetStaticMesh(WuPin_ShuJv[WuPinShuJu]);
-		StaticMeshGaoGuang->SetMaterial(0,GaoGuangCaiZhi);
-
-		StaticMeshGaoGuang->SetVisibility(bIsChongDie);
-
-	}
-
+	SuiJi();
 }
 
 void AActor_WuPin::PostInitializeComponents()
