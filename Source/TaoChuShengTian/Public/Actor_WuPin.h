@@ -40,6 +40,7 @@ public:
 	//随机物品
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "随机物品和物品数据")
 	TMap< TObjectPtr<UMyPrimaryDataAsset>, TObjectPtr<UStaticMesh>>WuPin_ShuJv;
+	void SuiJi();
 	//高光材质
 	UPROPERTY(EditAnywhere, Category = "高光材质")
 	TObjectPtr<UMaterial> GaoGuangCaiZhi;

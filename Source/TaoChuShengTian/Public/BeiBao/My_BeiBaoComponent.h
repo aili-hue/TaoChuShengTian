@@ -27,8 +27,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "获取背包中物品数量")
 	int32 GetBeiBaoWuPinShuLiang(FName WuPinID);
 
-	UFUNCTION(BlueprintCallable)
-	TArray<UMyPrimaryDataAsset*> ShiQUWuPinShuJv();
+	//UFUNCTION(BlueprintCallable)
+	//TArray<UMyPrimaryDataAsset*> ShiQUWuPinShuJv();
 
 	void WuPinXinXi(FName WuPinID, int32 WuPinShuLiang, UTexture2D* TuXiang, UMyPrimaryDataAsset* WuPinShuJvZiChan);
 	//背包更新

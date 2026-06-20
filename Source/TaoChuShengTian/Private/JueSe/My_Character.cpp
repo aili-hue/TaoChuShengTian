@@ -61,7 +61,7 @@ void AMy_Character::ShiJiaoDingShiQi()
 void AMy_Character::ShiJiaoQingHua()
 {
 	// 核心逻辑：动态确定目标。有武器目标是 100，没武器目标是 0
-	float TargetValue = WeaponActor ? 100.f : 0.f;
+	float TargetValue = bChiYouJinZhanWuQi ? 100.f : 0.f;
 
 	//如果过近就切换第一人称
 	if (bShiFouGuoJin && TargetValue != 0.f)TargetValue = 0.f;
@@ -84,7 +84,6 @@ void AMy_Character::ShiJiaoQingHua()
 		bShiFouWanCheng_QieHuan = true;
 	}
 }
-
 
 //角色移动
 void AMy_Character::MoveInput(const FInputActionValue& PlayInput)
@@ -122,10 +121,17 @@ void AMy_Character::MoveInput(const FInputActionValue& PlayInput)
 void AMy_Character::MoveInput_WanCheng(const FInputActionValue& PlayInput)
 {
 	float MoveSuDu = GetMoveMent();
-	if (!bShiFouJiaSu && MoveSuDu > ChuShiYiDongSuDong)return;
+	// 如果本来就没加速、或者速度已经是初始值，直接开启回复
+	if (!bShiFouJiaSu && MoveSuDu <= ChuShiYiDongSuDong)
+	{
+		HuiFuTiLi();
+		return;
+	}
+	// 再重置加速状态
+	bShiFouJiaSu = false;
+	CharacterMovementComponent->MaxWalkSpeed = ChuShiYiDongSuDong;
 	HuiFuTiLi();
 }
-
 void AMy_Character::HuiFuTiLi()
 {
 	if (GetWorldTimerManager().IsTimerActive(TimerHandleDiLi))return;
@@ -155,15 +161,23 @@ void AMy_Character::HuoQuShuJv(UMyPrimaryDataAsset* WuPinShuJv)
 
 void AMy_Character::ShuChengWupin(UMyPrimaryDataAsset* WuPinShuJv)
 {
+
 	if (!WuPinShuJv)return;
+
+
 	//根据物品数据资产的类型和数量进行相应的处理，比如增加玩家的属性，或者在角色上生成一个新的Actor（比如武器）
 	if (WuPinShuJv->CunFangActor)
 	{
+
 		//如果角色上已经有了武器，就先销毁原来的武器
 		if (WeaponActor)
 		{
+			if (bYiJingChiYouJinZhanWuQi)bYiJingChiYouJinZhanWuQi = false;
+			if (bShiFouYongYou)bShiFouYongYou = false;
+
 			WeaponActor->Destroy();
 			WeaponActor = nullptr;
+			ShiFouXiaoHui = true;
 		}
 		//设置生成Actor参数
 		FActorSpawnParameters ShengChengActorCanShu;
@@ -173,14 +187,15 @@ void AMy_Character::ShuChengWupin(UMyPrimaryDataAsset* WuPinShuJv)
 		ShengChengActorCanShu.Instigator = this;
 		//生成Actor，并将生成的Actor指针赋值给WeaponActor
 		WeaponActor = GetWorld()->SpawnActor<AActor>(WuPinShuJv->CunFangActor, ShengChengActorCanShu);
-		UE_LOG(LogTemp, Log, TEXT("成功"));
 	}
 	//如果生成了武器Actor，就将它绑定到角色的武器插槽上
 	if (WeaponActor)
 	{
 		//将生成的武器Actor绑定到角色的武器插槽上
-		WeaponActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WuQiChaCao);
-
+		if(WuPinShuJv->WuQinCao.IsValid())
+		{
+			WeaponActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WuPinShuJv->WuQinCao);
+		}
 		//玩家持有近战武器
 		if (WuPinShuJv->MYUELeiXing == EMYUELeiXing::WuQi_JinZhan && !bYiJingChiYouJinZhanWuQi)
 		{
@@ -189,13 +204,24 @@ void AMy_Character::ShuChengWupin(UMyPrimaryDataAsset* WuPinShuJv)
 			bYiJingChiYouJinZhanWuQi = !bYiJingChiYouJinZhanWuQi;
 			ShiJiaoDingShiQi();
 		}
-
+		else if (ShiFouXiaoHui && WuPinShuJv->MYUELeiXing != EMYUELeiXing::WuQi_JinZhan)
+		{
+			bChiYouJinZhanWuQi = false;
+			ShiJiaoDingShiQi();
+		}
 	}
 	else
 	{
 		WeaponActor = nullptr;
 	}
 
+}
+
+void AMy_Character::DaKaiShoDianTong()
+{
+	if (!bShiFouYongYou)return;
+	bShiFouKaiQiShouDian = !bShiFouKaiQiShouDian;
+	DaiKai.ExecuteIfBound(bShiFouKaiQiShouDian);
 }
 
 
@@ -298,6 +324,9 @@ void AMy_Character::GongtjiInput(const FInputActionValue& PlayInput)
 //背包input执行函数
 void AMy_Character::BeiBaoInPut(const FInputActionValue& PlayInput)
 {
+
+	if (!bShiFouKeYi_Tab)return;
+
 	if(!bKaiQi_BeiBao)
 	{
 		DaKaiBeiBao();
@@ -346,6 +375,11 @@ void AMy_Character::QingKongShouShangWuPin(const FInputActionValue& PlayInput)
 		
 		ShiJiaoDingShiQi();
 	}
+}
+
+void AMy_Character::FDaiKaiShouDianTong(const FInputActionValue& PlayInput)
+{
+	DaKaiShoDianTong();
 }
 
 
@@ -435,6 +469,10 @@ void AMy_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		if(IA_Q)
 		{
 			ZengQiangComponent->BindAction(IA_Q, ETriggerEvent::Started, this, &ThisClass::QingKongShouShangWuPin);
+		}
+		if(IA_F)
+		{
+			ZengQiangComponent->BindAction(IA_F, ETriggerEvent::Started, this, &ThisClass::FDaiKaiShouDianTong);
 		}
 	}
 
