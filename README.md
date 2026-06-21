@@ -122,6 +122,7 @@ git clone https://github.com/aili-hue/TaoChuShengTian.git
 ## 📞 联系方式
 
 - **GitHub**: [@aili-hue](https://github.com/aili-hue)
+- **邮箱**:13229323363@163.com
 - **B站/知乎**: 待补充
 - **Email**: 欢迎在 Issue 中交流
 
