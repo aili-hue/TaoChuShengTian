@@ -152,11 +152,10 @@ void AMy_Character::ZengJiaTiLi()
 
 void AMy_Character::HuoQuShuJv(UMyPrimaryDataAsset* WuPinShuJv)
 {
-	if(WuPinShuJv)
+	if (WuPinShuJv->CunFangActor)
 	{
 		ShuChengWupin(WuPinShuJv);
 	}
-
 }
 
 void AMy_Character::ShuChengWupin(UMyPrimaryDataAsset* WuPinShuJv)
@@ -168,15 +167,15 @@ void AMy_Character::ShuChengWupin(UMyPrimaryDataAsset* WuPinShuJv)
 	//根据物品数据资产的类型和数量进行相应的处理，比如增加玩家的属性，或者在角色上生成一个新的Actor（比如武器）
 	if (WuPinShuJv->CunFangActor)
 	{
-
 		//如果角色上已经有了武器，就先销毁原来的武器
 		if (WeaponActor)
 		{
+			WeaponActor->Destroy();
+			WeaponActor = nullptr;
+
 			if (bYiJingChiYouJinZhanWuQi)bYiJingChiYouJinZhanWuQi = false;
 			if (bShiFouYongYou)bShiFouYongYou = false;
 
-			WeaponActor->Destroy();
-			WeaponActor = nullptr;
 			ShiFouXiaoHui = true;
 		}
 		//设置生成Actor参数
@@ -286,7 +285,10 @@ bool AMy_Character::ChuLiShiQu(AActor* WuPin, UMyPrimaryDataAsset* WuPinShuJu)
 	{
 		return false;
 	}
-	ShuChengWupin(WuPinShuJu);
+	if (WuPinShuJu->CunFangActor)
+	{
+		ShuChengWupin(WuPinShuJu);
+	}
 	return true;
 }
 //切换近战动画
@@ -362,13 +364,13 @@ void AMy_Character::DunXiaInPut(const FInputActionValue& PlayInput)
 //清空手上物品
 void AMy_Character::QingKongShouShangWuPin(const FInputActionValue& PlayInput)
 {
+
 	if (bKaiQi_BeiBao)return;
 
 	if (WeaponActor && bShiFouWanCheng_QieHuan)
 	{
 		WeaponActor->Destroy();
 		WeaponActor = nullptr;
-
 		//切换视角
 		bChiYouJinZhanWuQi = false;
 		bYiJingChiYouJinZhanWuQi = false;

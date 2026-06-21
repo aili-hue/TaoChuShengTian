@@ -61,5 +61,6 @@ void AShouDianong::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		Character->DaiKai.Unbind();
 	}
 	Character = nullptr;
+	Super::EndPlay(EndPlayReason);
 }
 

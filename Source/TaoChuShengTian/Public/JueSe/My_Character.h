@@ -38,7 +38,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "弹簧臂长度")
 	float TanHuangBiArmLength = 0.f;
 	bool bShiFouWanCheng = false;
-	bool bShiFouWanCheng_QieHuan = false;
+	bool bShiFouWanCheng_QieHuan = true;
+
 	bool bShiFouKeYiGongJi = true;
 	//定时器句柄
 	FTimerHandle MyShiJiaoTimerHandle;
@@ -173,7 +174,6 @@ public:
 	//是否拥有手电筒
 	UPROPERTY(BlueprintReadOnly, Category = "是否拥有手电筒")
 	bool bShiFouYongYou = false;
-
 private:
 
 //角色移动组件
