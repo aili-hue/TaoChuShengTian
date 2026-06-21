@@ -1,5 +1,7 @@
 # TaoChuShengTian（逃出生天）
 
+**[中文](README.md) | [English](README_EN.md)**
+
 > 一个基于 **UE5.4** 的第三人称逃生游戏练习项目 | C++ + Blueprint 混合开发实战
 
 [![](https://img.shields.io/badge/Engine-Unreal%205.4-313131?style=flat-square&logo=unrealengine)](https://www.unrealengine.com/)
@@ -133,4 +135,4 @@ git clone https://github.com/aili-hue/TaoChuShengTian.git
 
 ---
 
-**Last Updated**: 2026-06-18
+**Last Updated**: 2026-06-21
