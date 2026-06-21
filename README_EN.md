@@ -122,6 +122,7 @@ Welcome to submit Issues, discussions, or Fork and make your own improvements!
 ## 📞 Contact
 
 - **GitHub**: [@aili-hue](https://github.com/aili-hue)
+- **Email**:13229323363@163.com
 - **Bilibili/Zhihu**: Coming soon
 - **Email**: Feel free to communicate in Issues
 
