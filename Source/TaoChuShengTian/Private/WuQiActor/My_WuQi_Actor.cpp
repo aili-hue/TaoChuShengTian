@@ -5,7 +5,6 @@
 #include"Components/StaticMeshComponent.h"
 #include"Components/CapsuleComponent.h"
 #include "JueSe/My_Character.h"
-#include"Kismet/GameplayStatics.h"
 // Sets default values
 AMy_WuQi_Actor::AMy_WuQi_Actor()
 {
@@ -29,6 +28,22 @@ void AMy_WuQi_Actor::SetStaticMeshPengZhung(bool KaiGUan)
 }
 
 
+void AMy_WuQi_Actor::ZhiXing_Implementation()
+{
+	if (MyCharacterRuoZhiZhen.IsValid())
+	{
+		MyCharacterRuoZhiZhen->GongJiIpute();
+		MyCharacterRuoZhiZhen->bShiFouJiXuGongJi = false;
+	}
+	SetStaticMeshPengZhung(true);
+}
+
+void AMy_WuQi_Actor::GuangBiPengZhuangVeiTuo_Implementation()
+{
+	SetStaticMeshPengZhung(false);
+	MyCharacterRuoZhiZhen->bShiFouJiXuGongJi = true;
+}
+
 // Called when the game starts or when spawned
 void AMy_WuQi_Actor::BeginPlay()
 {
@@ -38,19 +53,12 @@ void AMy_WuQi_Actor::BeginPlay()
 	CapsuleComponent->SetGenerateOverlapEvents(bIsPengZhuang);
 
 	//获取角色指针并绑定委托
-	MyCharacterRuoZhiZhen = Cast<AMy_Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	if (MyCharacterRuoZhiZhen.IsValid())
-	{
-		MyCharacterRuoZhiZhen->ChuFaPengZhuang.BindUObject(this, &ThisClass::SetStaticMeshPengZhung);
-	}
+	MyCharacterRuoZhiZhen = Cast<AMy_Character>(GetOwner());
 
 }
 void AMy_WuQi_Actor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	if (MyCharacterRuoZhiZhen.IsValid())
-	{
-		MyCharacterRuoZhiZhen->ChuFaPengZhuang.Unbind();
-	}
+	MyCharacterRuoZhiZhen->bShiFouJiXuGongJi = true;
 	MyCharacterRuoZhiZhen = nullptr;
 	Super::EndPlay(EndPlayReason);
 }

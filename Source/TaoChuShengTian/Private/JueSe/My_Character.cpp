@@ -20,6 +20,10 @@
 
 #include "HP/HP_Component.h"
 
+#include "WuQiActor/My_WuQi_Actor.h"
+
+#include "Interface/My_Interface.h"
+
 
 // Sets default values
 AMy_Character::AMy_Character()
@@ -270,11 +274,6 @@ void AMy_Character::ShiQuInput(const FInputActionValue& PlayInput)
 	ShiQuWeiTuo.Broadcast();
 }
 
-//棒球棍碰撞
-void AMy_Character::ChuFaPengZhuangFunc(bool bPengZhuang)
-{
-	ChuFaPengZhuang.ExecuteIfBound(bPengZhuang);
-}
 
 bool AMy_Character::ChuLiShiQu(AActor* WuPin, UMyPrimaryDataAsset* WuPinShuJu)
 {
@@ -296,32 +295,29 @@ UAnimMontage* AMy_Character::QieHuan()
 {
 	if (GongJiMontage.Num() == 0)return nullptr;
 	//用动画总数来%判断是否为最大值如果为就归零如果不为则正常增加
-	DongHuaShu = (DongHuaShu + 1) % GongJiMontage.Num();
 
-	return GongJiMontage[DongHuaShu];
+	if(bShiFouJiXuGongJi)
+	{
+		DongHuaShu = (DongHuaShu + 1) % GongJiMontage.Num();
+
+		return GongJiMontage[DongHuaShu];
+	}
+	return nullptr;
 }
 
 void AMy_Character::GuangBiPengZhuang()
 {
-	//关闭武器碰撞
-	bKaiQIPengZhuang = false;
-	ChuFaPengZhuangFunc(bKaiQIPengZhuang);
+	if(WeaponActor)
+	{
+		IMy_Interface::Execute_GuangBiPengZhuangVeiTuo(WeaponActor);
+	}
 }
 void AMy_Character::GongtjiInput(const FInputActionValue& PlayInput)
 {
-	if (bKaiQi_BeiBao)return;
-
-	//如果角色没有武器，就无法攻击
-	if (!WeaponActor)return;
-	if (!bShiFouKeYiGongJi)return;
-	//如果角色持有近战武器，就触发攻击事件
-	if (bChiYouJinZhanWuQi && !bKaiQIPengZhuang && !bShiFouDun)
-	{
-		//开启武器碰撞
-		bKaiQIPengZhuang = true;
-		ChuFaPengZhuangFunc(bKaiQIPengZhuang);
-		GongJiIpute();
-	}
+	if (bKaiQi_BeiBao || !bShiFouKeYiGongJi)return;
+	//如果角色没有物品就无法使用
+	if (!WeaponActor || !WeaponActor->Implements<UMy_Interface>())return;
+	IMy_Interface::Execute_ZhiXing(WeaponActor);
 }
 //背包input执行函数
 void AMy_Character::BeiBaoInPut(const FInputActionValue& PlayInput)

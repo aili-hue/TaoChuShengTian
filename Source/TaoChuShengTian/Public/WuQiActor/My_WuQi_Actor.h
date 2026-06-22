@@ -4,11 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Interface/My_Interface.h"
 
 #include "My_WuQi_Actor.generated.h"
 
 UCLASS()
-class TAOCHUSHENGTIAN_API AMy_WuQi_Actor : public AActor
+class TAOCHUSHENGTIAN_API AMy_WuQi_Actor : public AActor,public IMy_Interface
 {
 	GENERATED_BODY()
 	
@@ -31,6 +32,8 @@ public:
 	UPROPERTY()
 	TWeakObjectPtr<class AMy_Character>MyCharacterRuoZhiZhen;
 
+	virtual void ZhiXing_Implementation()override;
+	virtual void GuangBiPengZhuangVeiTuo_Implementation()override;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

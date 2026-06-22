@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
 #include "Actor_WuPin.generated.h"
 
 UCLASS()
@@ -44,6 +45,7 @@ public:
 	//高光材质
 	UPROPERTY(EditAnywhere, Category = "高光材质")
 	TObjectPtr<UMaterial> GaoGuangCaiZhi;
+
 private:
 
 	//触发高光
