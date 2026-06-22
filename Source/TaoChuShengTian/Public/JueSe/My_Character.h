@@ -9,26 +9,27 @@
 
 #include"MyPrimaryDataAsset.h"
 
+#include "Interface/My_Interface.h"
+
+
 #include "My_Character.generated.h"
 
 //角色拾取委托声明
 DECLARE_MULTICAST_DELEGATE(FShiQuWeiTuo);
-//设置物品碰撞委托声明
-DECLARE_DELEGATE_OneParam(FChuFaPengZhuang, bool);
 //打开手电筒
 DECLARE_DELEGATE_OneParam(FDaiKai, bool);
+
 
 class UMyPrimaryDataAsset;
 
 UCLASS()
-class TAOCHUSHENGTIAN_API AMy_Character : public ACharacter
+class TAOCHUSHENGTIAN_API AMy_Character : public ACharacter, public IMy_Interface
 {
 	GENERATED_BODY()
 
 public:
 
 	AMy_Character();
-	
 //角色视角（摄像机，弹簧臂）
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -41,6 +42,7 @@ public:
 	bool bShiFouWanCheng_QieHuan = true;
 
 	bool bShiFouKeYiGongJi = true;
+
 	//定时器句柄
 	FTimerHandle MyShiJiaoTimerHandle;
 	//定时器函数
@@ -97,12 +99,6 @@ public:
 //角色拾取委托
 
 	FShiQuWeiTuo ShiQuWeiTuo;
-//角色触发碰撞委托
-	FChuFaPengZhuang ChuFaPengZhuang;
-//角色触发碰撞委托函数
-
-	void ChuFaPengZhuangFunc(bool bPengZhuang);
-
 //角色触发拾取委托函数
 	bool ChuLiShiQu(AActor* WuPin, UMyPrimaryDataAsset* WuPinShuJu);
 //角色是否拥有武器|近战
@@ -117,7 +113,7 @@ public:
 	int32 DongHuaShu = -1;
 	UFUNCTION(BlueprintCallable, Category = "获取近战蒙太奇")
 	UAnimMontage* QieHuan();
-
+	bool bShiFouJiXuGongJi = true;
 //攻击函数
 	UFUNCTION(BlueprintImplementableEvent, Category = "攻击")
 	void GongJiIpute();
@@ -128,6 +124,7 @@ public:
 	//关闭近战武器碰撞函数
 	UFUNCTION(BlueprintCallable, Category = "关闭武器碰撞")
 	void GuangBiPengZhuang();
+
 	//背包组件
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "背包组件")
 	TObjectPtr<class UMy_BeiBaoComponent>BeiBaoComponent;
@@ -174,6 +171,10 @@ public:
 	//是否拥有手电筒
 	UPROPERTY(BlueprintReadOnly, Category = "是否拥有手电筒")
 	bool bShiFouYongYou = false;
+	//血量更新
+	UFUNCTION(BlueprintImplementableEvent, Category = "血量更新")
+	void XueLianngGennngXin();
+
 private:
 
 //角色移动组件

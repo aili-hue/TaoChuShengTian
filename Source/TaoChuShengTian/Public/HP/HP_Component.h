@@ -7,6 +7,7 @@
 #include "HP_Component.generated.h"
 
 
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TAOCHUSHENGTIAN_API UHP_Component : public UActorComponent
 {
@@ -17,7 +18,7 @@ public:
 	UHP_Component();
 //ÑªÁ¿Âß¼­	
 	UFUNCTION(BlueprintCallable, Category="¼ÓÑª")
-	void AddHP(float DeltaHP);
+	bool AddHP(float DeltaHP);
 
 	UFUNCTION(BlueprintCallable, Category = "µôÑª")
 	void DiaoHP(float DeltaHP);
