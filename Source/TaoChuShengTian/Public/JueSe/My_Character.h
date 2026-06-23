@@ -23,7 +23,7 @@ DECLARE_DELEGATE_OneParam(FDaiKai, bool);
 class UMyPrimaryDataAsset;
 
 UCLASS()
-class TAOCHUSHENGTIAN_API AMy_Character : public ACharacter, public IMy_Interface
+class TAOCHUSHENGTIAN_API AMy_Character : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -40,7 +40,6 @@ public:
 	float TanHuangBiArmLength = 0.f;
 	bool bShiFouWanCheng = false;
 	bool bShiFouWanCheng_QieHuan = true;
-
 	bool bShiFouKeYiGongJi = true;
 
 	//定时器句柄
@@ -162,6 +161,7 @@ public:
 	void HuoQuShuJv(UMyPrimaryDataAsset* WuPinShuJv);
 	void ShuChengWupin(UMyPrimaryDataAsset* WuPinShuJv);
 	bool ShiFouXiaoHui = false;
+	bool bShiFouQieHuan = false;
 	bool bShiFouKeYi_Tab = true;
 	//打开手电筒委托
 	FDaiKai DaiKai;

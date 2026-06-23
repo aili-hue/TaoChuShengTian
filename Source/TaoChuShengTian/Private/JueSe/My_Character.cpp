@@ -158,6 +158,7 @@ void AMy_Character::HuoQuShuJv(UMyPrimaryDataAsset* WuPinShuJv)
 {
 	if (WuPinShuJv->CunFangActor)
 	{
+		bShiFouQieHuan = true;
 		ShuChengWupin(WuPinShuJv);
 	}
 }
@@ -166,51 +167,54 @@ void AMy_Character::ShuChengWupin(UMyPrimaryDataAsset* WuPinShuJv)
 {
 
 	if (!WuPinShuJv)return;
-
-
 	//根据物品数据资产的类型和数量进行相应的处理，比如增加玩家的属性，或者在角色上生成一个新的Actor（比如武器）
 	if (WuPinShuJv->CunFangActor)
 	{
-		//如果角色上已经有了武器，就先销毁原来的武器
-		if (WeaponActor)
+		if (bShiFouQieHuan)
 		{
-			WeaponActor->Destroy();
-			WeaponActor = nullptr;
+			if (WeaponActor)
+			{
+				WeaponActor->Destroy();
+				WeaponActor = nullptr;
+			}
 
 			if (bYiJingChiYouJinZhanWuQi)bYiJingChiYouJinZhanWuQi = false;
 			if (bShiFouYongYou)bShiFouYongYou = false;
 
 			ShiFouXiaoHui = true;
+			bShiFouQieHuan = false;
 		}
-		//设置生成Actor参数
-		FActorSpawnParameters ShengChengActorCanShu;
-		//设置角色为生成Actor的拥有者
-		ShengChengActorCanShu.Owner = this;
-		//设置角色为生成Actor的触发者
-		ShengChengActorCanShu.Instigator = this;
-		//生成Actor，并将生成的Actor指针赋值给WeaponActor
-		WeaponActor = GetWorld()->SpawnActor<AActor>(WuPinShuJv->CunFangActor, ShengChengActorCanShu);
-	}
-	//如果生成了武器Actor，就将它绑定到角色的武器插槽上
-	if (WeaponActor)
-	{
-		//将生成的武器Actor绑定到角色的武器插槽上
-		if(WuPinShuJv->WuQinCao.IsValid())
+		if (!WeaponActor)
 		{
-			WeaponActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WuPinShuJv->WuQinCao);
-		}
-		//玩家持有近战武器
-		if (WuPinShuJv->MYUELeiXing == EMYUELeiXing::WuQi_JinZhan && !bYiJingChiYouJinZhanWuQi)
-		{
-			bChiYouJinZhanWuQi = true;
+			//设置生成Actor参数
+			FActorSpawnParameters ShengChengActorCanShu;
+			//设置角色为生成Actor的拥有者
+			ShengChengActorCanShu.Owner = this;
+			//设置角色为生成Actor的触发者
+			ShengChengActorCanShu.Instigator = this;
+			//生成Actor，并将生成的Actor指针赋值给WeaponActor
+			WeaponActor = GetWorld()->SpawnActor<AActor>(WuPinShuJv->CunFangActor, ShengChengActorCanShu);
+			//如果生成了武器Actor，就将它绑定到角色的武器插槽上
 
-			bYiJingChiYouJinZhanWuQi = !bYiJingChiYouJinZhanWuQi;
-			ShiJiaoDingShiQi();
-		}
-		else if (ShiFouXiaoHui && WuPinShuJv->MYUELeiXing != EMYUELeiXing::WuQi_JinZhan)
-		{
-			bChiYouJinZhanWuQi = false;
-			ShiJiaoDingShiQi();
+			//将生成的武器Actor绑定到角色的武器插槽上
+			if (WuPinShuJv->WuQinCao.IsValid())
+			{
+				WeaponActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WuPinShuJv->WuQinCao);
+				bShiFouQieHuan = false;
+			}
+			//玩家持有近战武器
+			if (WuPinShuJv->MYUELeiXing == EMYUELeiXing::WuQi_JinZhan && !bYiJingChiYouJinZhanWuQi)
+			{
+				bChiYouJinZhanWuQi = true;
+
+				bYiJingChiYouJinZhanWuQi = !bYiJingChiYouJinZhanWuQi;
+				ShiJiaoDingShiQi();
+			}
+			else if (ShiFouXiaoHui && WuPinShuJv->MYUELeiXing != EMYUELeiXing::WuQi_JinZhan)
+			{
+				bChiYouJinZhanWuQi = false;
+				ShiJiaoDingShiQi();
+			}
 		}
 	}
 	else
@@ -272,6 +276,7 @@ void AMy_Character::ShiQuInput(const FInputActionValue& PlayInput)
 	if (bKaiQi_BeiBao)return;
 
 	ShiQuWeiTuo.Broadcast();
+
 }
 
 
@@ -362,7 +367,6 @@ void AMy_Character::QingKongShouShangWuPin(const FInputActionValue& PlayInput)
 {
 
 	if (bKaiQi_BeiBao)return;
-
 	if (WeaponActor && bShiFouWanCheng_QieHuan)
 	{
 		WeaponActor->Destroy();
