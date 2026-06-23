@@ -35,7 +35,7 @@ void AShouDianong::ShouDianTongKaiGuan(bool bShiFouKaiQi)
 {
 	if(bShiFouKaiQi)
 	{
-		SpotLightComponent->SetIntensity(14000);
+		SpotLightComponent->SetIntensity(10000);
 	}
 	else
 	{
