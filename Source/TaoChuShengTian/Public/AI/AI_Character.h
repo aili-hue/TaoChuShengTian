@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ï»¿// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "AI_Character.generated.h"
 
+class UHP_Component;
 class UBoxComponent;
 
 
@@ -23,10 +24,10 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TObjectPtr<UBoxComponent>BoxComponent;
 
-	UFUNCTION(BlueprintCallable, Category = "¾àÀëÅĞ¶Ï")
+	UFUNCTION(BlueprintCallable, Category = "è·ç¦»åˆ¤æ–­")
 	void GongJiJvLiPanDuan(AMy_Character* WanJia);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "¹¥»÷¾àÀë")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "æ”»å‡»è·ç¦»")
 	float GongJiJvLi = 120.f;
 
 	UFUNCTION()
@@ -35,18 +36,31 @@ public:
 	virtual void YunXing_Implementation(AActor* WanJia)override;
 	bool bGongJiZhong = false;
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "¹¥»÷")
+	UFUNCTION(BlueprintImplementableEvent, Category = "æ”»å‡»")
 	void GongJi();
 
 	void GongJiZhiXing();
 
-	UFUNCTION(BlueprintCallable, Category = "¹Ø±ÕÅö×²")
+	UFUNCTION(BlueprintCallable, Category = "å…³é—­ç¢°æ’")
 	void GuangBiPengZhuangShiJian();
 	bool GongJiYiCi = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ä¼¤å®³æ•°å€¼")
+	float ShangHai = 10.f;
+	UPROPERTY()
+	TObjectPtr<UHP_Component>HP_Component;
+	UFUNCTION(BlueprintImplementableEvent, Category = "å—å‡»")
+	void ShouJiDongHua();
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = "æ˜¯å¦å®Œæˆå—å‡»åŠ¨ç”»")
+	bool bShiFouWanCheng = true;
+
+	UPROPERTY(BlueprintReadWrite, Category = "æ˜¯å¦æ­»äº¡")
+	bool bSiWang = false;
+
+	void TingZhiYiDong();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
 public:	
 
 	// Called to bind functionality to input

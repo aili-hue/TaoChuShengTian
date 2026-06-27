@@ -5,6 +5,7 @@
 #include"Components/StaticMeshComponent.h"
 #include"Components/CapsuleComponent.h"
 #include "JueSe/My_Character.h"
+#include"Kismet/GameplayStatics.h"
 // Sets default values
 AMy_WuQi_Actor::AMy_WuQi_Actor()
 {
@@ -24,7 +25,24 @@ void AMy_WuQi_Actor::SetStaticMeshPengZhung(bool KaiGUan)
 {
 	//切换碰撞状态
 	bIsPengZhuang = KaiGUan;
+	if (bIsPengZhuang)ShouJiMingDan.Empty();
 	CapsuleComponent->SetGenerateOverlapEvents(bIsPengZhuang);
+	
+}
+
+void AMy_WuQi_Actor::CapsuleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor && OtherActor != this && OtherActor != GetOwner())
+	{
+		if (ShouJiMingDan.Contains(OtherActor))return;
+		AActor* ChiYouZhe = GetOwner();
+		if (!ChiYouZhe)return;
+		AController* KongZhiQi = ChiYouZhe->GetInstigatorController();
+		if (!KongZhiQi)return;
+
+		ShouJiMingDan.Add(OtherActor);
+		UGameplayStatics::ApplyDamage(OtherActor, ShiHai, KongZhiQi, this, UDamageType::StaticClass());
+	}
 }
 
 
@@ -48,10 +66,10 @@ void AMy_WuQi_Actor::GuangBiPengZhuangVeiTuo_Implementation()
 void AMy_WuQi_Actor::BeginPlay()
 {
 	Super::BeginPlay();
-
 	//生成时关闭碰撞
 	CapsuleComponent->SetGenerateOverlapEvents(bIsPengZhuang);
 
+	CapsuleComponent->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::CapsuleBeginOverlap);
 	//获取角色指针并绑定委托
 	MyCharacterRuoZhiZhen = Cast<AMy_Character>(GetOwner());
 

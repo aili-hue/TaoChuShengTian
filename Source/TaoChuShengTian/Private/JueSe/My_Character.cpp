@@ -480,3 +480,13 @@ void AMy_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 }
 
+float AMy_Character::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	HPComponent->DiaoHP(DamageAmount);
+	if (HPComponent->GetHP() <= 0)
+	{
+		UE_LOG(LogTemp, Log, TEXT("角色死亡"));
+	}
+	return 0.f;
+}
+
