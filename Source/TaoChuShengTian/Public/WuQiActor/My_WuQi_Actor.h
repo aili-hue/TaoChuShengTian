@@ -25,13 +25,17 @@ public:
 	//…Ë÷√≈ˆ◊≤
 
 	bool bIsPengZhuang = false;
+	//…À∫¶÷µ
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "…À∫¶÷µ")
+	float ShiHai = 20.f;
 
 	void SetStaticMeshPengZhung(bool KaiGUan);
-
+	UFUNCTION()
+	void CapsuleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	//»ı÷∏’Î∞Û∂®
-	UPROPERTY()
-	TWeakObjectPtr<class AMy_Character>MyCharacterRuoZhiZhen;
 
+	TWeakObjectPtr<class AMy_Character>MyCharacterRuoZhiZhen;
+	TArray<AActor*>ShouJiMingDan;
 	virtual void ZhiXing_Implementation()override;
 	virtual void GuangBiPengZhuangVeiTuo_Implementation()override;
 protected:
